@@ -1,0 +1,123 @@
+.shop {
+  &__header {
+    background: var(--white);
+    border-bottom: 1px solid var(--light-grey);
+    padding: 2.5rem 1.5rem;
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    p { color: var(--grey); font-size: 0.875rem; }
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 2.5rem;
+    padding-top: 2.5rem;
+    padding-bottom: 4rem;
+    align-items: start;
+  }
+
+  &__filters {
+    position: sticky;
+    top: 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  &__empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 0;
+
+    p {
+      color: var(--grey);
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+
+.filter-group {
+  h4 {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 0.75rem;
+  }
+
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  button {
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: var(--grey);
+    border-radius: 2px;
+    transition: all 0.15s;
+
+    &:hover { background: var(--light-grey); color: var(--black); }
+    &.active {
+      background: var(--black);
+      color: var(--white);
+    }
+  }
+}
+
+.filter-hint {
+  font-size: 0.75rem;
+  color: var(--grey);
+  font-style: italic;
+  margin-bottom: 0.75rem;
+  opacity: 0.7;
+}
+
+@media (max-width: 1024px) {
+  .shop__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .shop__body {
+    grid-template-columns: 1fr;
+  }
+
+  .shop__filters {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 1.5rem;
+    padding-bottom: 1rem;
+
+    .filter-group {
+      min-width: 160px;
+
+      ul { flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
+
+      button { width: auto; }
+    }
+  }
+
+  .shop__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .shop__grid { grid-template-columns: 1fr; }
+}

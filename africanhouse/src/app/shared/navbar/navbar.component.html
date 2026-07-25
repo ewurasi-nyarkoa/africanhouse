@@ -1,1 +1,22 @@
-<p>navbar works!</p>
+<nav class="navbar">
+  <div class="container navbar__inner">
+    <a routerLink="/" class="navbar__logo">African House</a>
+
+    <button class="navbar__burger" (click)="menuOpen = !menuOpen" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul class="navbar__links" [class.open]="menuOpen">
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="menuOpen=false">Home</a></li>
+      <li><a routerLink="/shop" routerLinkActive="active" (click)="menuOpen=false">Shop</a></li>
+      <li>
+        <a routerLink="/cart" routerLinkActive="active" class="navbar__cart" (click)="menuOpen=false">
+          Cart
+          @if ((cartCount$ | async)! > 0) {
+            <span class="cart-badge">{{ cartCount$ | async }}</span>
+          }
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

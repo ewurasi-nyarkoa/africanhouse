@@ -1,1 +1,16 @@
-<p>subscribe-form works!</p>
+<section class="subscribe">
+  <div class="container subscribe__inner">
+    <div class="subscribe__text">
+      <h2>Stay in the know</h2>
+      <p>New arrivals, discounts and collection updates — straight to your inbox.</p>
+    </div>
+    @if (!submitted) {
+      <form class="subscribe__form" (ngSubmit)="onSubmit()">
+        <input type="email" [(ngModel)]="email" name="email" placeholder="Your email address" required />
+        <button type="submit" class="btn-primary">Notify Me</button>
+      </form>
+    } @else {
+      <p class="subscribe__thanks">Thank you! We'll be in touch. ✦</p>
+    }
+  </div>
+</section>

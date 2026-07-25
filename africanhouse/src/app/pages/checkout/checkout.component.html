@@ -1,1 +1,147 @@
-<p>checkout works!</p>
+@if (submitted) {
+  <!-- SUCCESS STATE -->
+  <div class="container success">
+    <div class="success__icon">✦</div>
+    <h1>Order Received!</h1>
+    <p>Thank you for your order. We will contact you on <strong>{{ form.get('phone')?.value }}</strong> to confirm payment and arrange delivery.</p>
+    <div class="success__info">
+      <p>📍 African House, Nsawam, Eastern Region</p>
+      <p>📞 <a href="tel:+233240070628">0240 070 628</a></p>
+    </div>
+    <a routerLink="/shop" class="btn-primary">Continue Shopping</a>
+  </div>
+
+} @else {
+
+  <div class="checkout">
+    <div class="container checkout__inner">
+
+      <!-- FORM -->
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="checkout__form">
+        <h1 class="checkout__title">Checkout</h1>
+
+        <!-- CUSTOMER DETAILS -->
+        <fieldset class="checkout__section">
+          <legend>Your Details</legend>
+
+          <div class="field">
+            <label for="fullName">Full Name</label>
+            <input id="fullName" type="text" formControlName="fullName" placeholder="e.g. Akosua Mensah" />
+            @if (hasError('fullName')) {
+              <span class="field__error">Please enter your full name</span>
+            }
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone Number</label>
+            <input id="phone" type="tel" formControlName="phone" placeholder="e.g. 0244000000" />
+            @if (hasError('phone')) {
+              <span class="field__error">Enter a valid Ghana phone number (e.g. 0244000000)</span>
+            }
+          </div>
+
+          <div class="field">
+            <label for="location">Delivery Location</label>
+            <input id="location" type="text" formControlName="location" placeholder="e.g. Accra, Kumasi, Takoradi..." />
+            @if (hasError('location')) {
+              <span class="field__error">Please enter your delivery location</span>
+            }
+          </div>
+
+          <div class="field">
+            <label for="deliveryNote">Delivery Note <span class="field__optional">(optional)</span></label>
+            <textarea id="deliveryNote" formControlName="deliveryNote" rows="2" placeholder="Any special instructions for delivery..."></textarea>
+          </div>
+        </fieldset>
+
+        <!-- PAYMENT METHOD -->
+        <fieldset class="checkout__section">
+          <legend>Payment Method</legend>
+
+          <div class="payment-methods">
+            @for (method of paymentMethods; track method.value) {
+              <label class="payment-option" [class.active]="selectedMethod === method.value">
+                <input type="radio" formControlName="paymentMethod" [value]="method.value" />
+                <span class="payment-option__icon">{{ method.icon }}</span>
+                <span class="payment-option__label">{{ method.label }}</span>
+              </label>
+            }
+          </div>
+
+          <!-- MOMO NUMBER -->
+          @if (isMobileMoney) {
+            <div class="field field--momo">
+              <label for="momoNumber">
+                {{ selectedMethod === 'mtn-momo' ? 'MTN MoMo' : 'Vodafone Cash' }} Number
+              </label>
+              <input id="momoNumber" type="tel" formControlName="momoNumber" placeholder="e.g. 0244000000" />
+              @if (hasError('momoNumber')) {
+                <span class="field__error">Enter a valid mobile money number</span>
+              }
+            </div>
+          }
+
+          <!-- BANK TRANSFER DETAILS -->
+          @if (selectedMethod === 'bank-transfer') {
+            <div class="bank-details">
+              <p class="bank-details__title">Transfer to:</p>
+              <div class="bank-details__row"><span>Bank</span><strong>GCB Bank</strong></div>
+              <div class="bank-details__row"><span>Account Name</span><strong>African House</strong></div>
+              <div class="bank-details__row"><span>Account Number</span><strong>XXXX-XXXX-XXXX</strong></div>
+              <p class="bank-details__note">Use your phone number as the payment reference. We will confirm once payment is received.</p>
+            </div>
+          }
+        </fieldset>
+
+        <button type="submit" class="btn-primary checkout__submit" [disabled]="placing">
+          {{ placing ? 'Placing Order...' : 'Place Order — GH₵ ' + total }}
+        </button>
+
+        <p class="checkout__terms">
+          By placing your order you agree that all fabrics are sold unsewn. Delivery fees are confirmed after order placement.
+        </p>
+      </form>
+
+      <!-- ORDER SUMMARY -->
+      <aside class="checkout__summary">
+        <h2>Order Summary</h2>
+
+        <div class="checkout__items">
+          @for (item of items; track item.fabric.id) {
+            <div class="checkout-item">
+              <div class="checkout-item__image">
+                <img [src]="item.fabric.imageUrl" [alt]="item.fabric.name" />
+              </div>
+              <div class="checkout-item__info">
+                <p class="checkout-item__name">{{ item.fabric.name }}</p>
+                <p class="checkout-item__yards">{{ item.yards }} yards</p>
+              </div>
+              <p class="checkout-item__price">GH₵ {{ item.fabric.pricePerYard * item.yards }}</p>
+            </div>
+          }
+        </div>
+
+        <div class="checkout__totals">
+          <div class="checkout__total-row">
+            <span>Subtotal</span>
+            <span>GH₵ {{ total }}</span>
+          </div>
+          <div class="checkout__total-row">
+            <span>Delivery</span>
+            <span class="checkout__delivery-note">TBD</span>
+          </div>
+          <div class="checkout__total-row checkout__total-row--grand">
+            <span>Total</span>
+            <span>GH₵ {{ total }}</span>
+          </div>
+        </div>
+
+        <div class="checkout__contact">
+          <p>Questions? Call us:</p>
+          <a href="tel:+233240070628">0240 070 628</a>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+}

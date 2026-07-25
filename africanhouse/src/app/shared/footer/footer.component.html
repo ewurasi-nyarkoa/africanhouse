@@ -1,0 +1,65 @@
+<footer class="footer">
+  <div class="container footer__top">
+
+    <!-- BRAND -->
+    <div class="footer__brand">
+      <a routerLink="/" class="footer__logo">African House</a>
+      <p>A fabric house, not a tailor. Every length we sell arrives unsewn — yours to design, yours to wear.</p>
+      <a href="tel:+233240070628" class="footer__phone">
+        <span>📞</span> 0240 070 628
+      </a>
+    </div>
+
+    <!-- SHOP -->
+    <div class="footer__col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a routerLink="/shop">All Fabrics</a></li>
+        <li><a routerLink="/shop" [queryParams]="{category: 'everyday'}">Everyday</a></li>
+        <li><a routerLink="/shop" [queryParams]="{category: 'funeral'}">Funeral Cloth</a></li>
+        <li><a routerLink="/shop" [queryParams]="{category: 'kente'}">Kente</a></li>
+      </ul>
+    </div>
+
+    <!-- WHOLESALE & INFO -->
+    <div class="footer__col">
+      <h4>Wholesale & Bulk</h4>
+      <p class="footer__col-text">
+        We serve retail and wholesale customers. Salon owners, tailors, schools and groups ordering uniform fabric for a day are welcome — call us directly to discuss bulk pricing.
+      </p>
+      <a href="tel:+233240070628" class="footer__cta">Call for Wholesale Pricing</a>
+    </div>
+
+    <!-- DELIVERY & LOCATION -->
+    <div class="footer__col">
+      <h4>Delivery & Location</h4>
+      <ul>
+        <li>
+          <span class="footer__icon">📍</span>
+          Nsawam, Eastern Region, Ghana
+        </li>
+        <li>
+          <span class="footer__icon">🚚</span>
+          Nationwide delivery available at a fee
+        </li>
+        <li>
+          <span class="footer__icon">🏪</span>
+          Walk-in & pickup welcome
+        </li>
+        <li>
+          <span class="footer__icon">📦</span>
+          Retail & wholesale orders
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="footer__bottom">
+    <div class="container footer__bottom-inner">
+      <p>&copy; {{ currentYear }} African House. All rights reserved.</p>
+      <p class="footer__tagline">Fabric, not finished garments. Yours to design.</p>
+    </div>
+  </div>
+</footer>

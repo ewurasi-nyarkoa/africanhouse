@@ -1,1 +1,72 @@
-<p>home works!</p>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__content">
+    <p class="hero__eyebrow">Fabric House · Est. Ghana</p>
+    <h1 class="hero__title">Cloth for every<br/>moment that matters</h1>
+    <p class="hero__sub">GTP, Ankara, Kente, damask, voile and brocade — sold unsewn by the yard so your tailor can craft something entirely yours.</p>
+    <div class="hero__actions">
+      <a routerLink="/shop" class="btn-primary">Shop Fabrics</a>
+      <a routerLink="/shop" class="btn-outline">Funeral Collection</a>
+    </div>
+  </div>
+  <div class="hero__image-wrap">
+    <div class="hero__image-placeholder"></div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values">
+  <div class="container values__grid">
+    <div class="value">
+      <span class="value__icon">◈</span>
+      <h3>Honest Quality</h3>
+      <p>GTP, Ankara, Kente, voile, damask and brocade — selected for feel, durability and true colour.</p>
+    </div>
+    <div class="value">
+      <span class="value__icon">✦</span>
+      <h3>Yours to Design</h3>
+      <p>Sold unsewn by the yard so your tailor can craft something that is entirely you.</p>
+    </div>
+    <div class="value">
+      <span class="value__icon">◉</span>
+      <h3>Right for the Occasion</h3>
+      <p>Church, work, wedding, everyday and funeral — we have the cloth for every moment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COLLECTIONS -->
+<section class="pairings">
+  <div class="container">
+    <h2 class="section-title">Shop by Occasion</h2>
+    <div class="pairings__grid">
+      <a routerLink="/shop" [queryParams]="{category: 'everyday'}" class="pairing pairing--everyday">
+        <span>Everyday</span>
+      </a>
+      <a routerLink="/shop" [queryParams]="{category: 'funeral'}" class="pairing pairing--funeral">
+        <span>Funeral</span>
+      </a>
+      <a routerLink="/shop" [queryParams]="{category: 'kente'}" class="pairing pairing--kente">
+        <span>Kente</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED FABRICS -->
+<section class="featured">
+  <div class="container">
+    <div class="featured__header">
+      <h2 class="section-title">Featured Fabrics</h2>
+      <a routerLink="/shop" class="featured__see-all">See all →</a>
+    </div>
+    <div class="featured__grid">
+      @for (fabric of (featured$ | async); track fabric.id) {
+        <app-fabric-card [fabric]="fabric" />
+      }
+    </div>
+  </div>
+</section>
+
+<!-- SUBSCRIBE -->
+<app-subscribe-form />

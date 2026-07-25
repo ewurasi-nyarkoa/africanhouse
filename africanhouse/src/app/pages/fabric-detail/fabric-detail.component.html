@@ -1,1 +1,84 @@
-<p>fabric-detail works!</p>
+@if (fabric) {
+  <div class="detail">
+
+    <!-- BREADCRUMB -->
+    <div class="container detail__breadcrumb">
+      <a routerLink="/shop">Shop</a>
+      <span>/</span>
+      <span>{{ fabric.name }}</span>
+    </div>
+
+    <div class="container detail__body">
+
+      <!-- IMAGE -->
+      <div class="detail__image-wrap">
+        <img [src]="fabric.imageUrl" [alt]="fabric.name" class="detail__image" />
+        <div class="detail__badges">
+          <span class="badge badge--material">{{ fabric.material }}</span>
+          <span class="badge badge--category">{{ fabric.category }}</span>
+          @if (!fabric.inStock) {
+            <span class="badge badge--out">Out of Stock</span>
+          }
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div class="detail__info">
+        <h1 class="detail__name">{{ fabric.name }}</h1>
+        <p class="detail__colour">{{ fabric.colourPairing }}</p>
+        <p class="detail__price">GH₵ {{ fabric.pricePerYard }} <span>per yard</span></p>
+        <p class="detail__desc">{{ fabric.description }}</p>
+
+        <!-- NOTICE -->
+        <div class="detail__notice">
+          <span>✦</span>
+          <p>This fabric is sold <strong>unsewn by the yard</strong>. Take it to your tailor and have it made exactly how you want it.</p>
+        </div>
+
+        @if (fabric.inStock) {
+          <!-- YARD SELECTOR -->
+          <div class="detail__selector">
+            <label>How many yards?</label>
+            <p class="detail__min-note">Minimum {{ fabric.minYards }} yds · sold in {{ fabric.yardStep }}-yard lots</p>
+            <div class="yard-selector">
+              <button (click)="decrement()" [disabled]="yards <= fabric.minYards" aria-label="Decrease">−</button>
+              <span>{{ yards }} yd</span>
+              <button (click)="increment()" aria-label="Increase">+</button>
+            </div>
+            <p class="detail__subtotal">Total: <strong>GH₵ {{ subtotal }}</strong></p>
+          </div>
+
+          <button class="btn-primary detail__add" (click)="addToCart()">
+            {{ added ? '✓ Added to Cart' : 'Add to Cart' }}
+          </button>
+
+          <a routerLink="/cart" class="detail__view-cart">View Cart →</a>
+        } @else {
+          <p class="detail__unavailable">This fabric is currently out of stock. Subscribe below to be notified when it's back.</p>
+        }
+
+        <!-- DELIVERY INFO -->
+        <div class="detail__delivery">
+          <div class="delivery-item">
+            <span>📍</span>
+            <p>Available at our store in <strong>Nsawam, Eastern Region</strong></p>
+          </div>
+          <div class="delivery-item">
+            <span>🚚</span>
+            <p>Nationwide delivery available at a fee</p>
+          </div>
+          <div class="delivery-item">
+            <span>📦</span>
+            <p>Wholesale & bulk orders welcome — <a href="tel:+233240070628">call 0240 070 628</a></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+} @else {
+  <div class="container detail__not-found">
+    <p>Fabric not found.</p>
+    <a routerLink="/shop" class="btn-primary">Back to Shop</a>
+  </div>
+}

@@ -1,1 +1,77 @@
-<p>cart works!</p>
+<div class="cart">
+  <div class="container">
+    <h1 class="cart__title">Your Cart</h1>
+
+    @if (items.length === 0) {
+      <div class="cart__empty">
+        <p>Your cart is empty.</p>
+        <a routerLink="/shop" class="btn-primary">Browse Fabrics</a>
+      </div>
+    } @else {
+      <div class="cart__layout">
+
+        <!-- ITEMS -->
+        <div class="cart__items">
+          @for (item of items; track item.fabric.id) {
+            <div class="cart-item">
+              <div class="cart-item__image-wrap">
+                <img [src]="item.fabric.imageUrl" [alt]="item.fabric.name" />
+              </div>
+
+              <div class="cart-item__info">
+                <h3>{{ item.fabric.name }}</h3>
+                <p class="cart-item__meta">{{ item.fabric.material | titlecase }} · {{ item.fabric.colourPairing }}</p>
+                <p class="cart-item__price">GH₵ {{ item.fabric.pricePerYard }} / yard</p>
+                <p class="cart-item__min">Min. {{ item.fabric.minYards }} yds · sold in {{ item.fabric.yardStep }}-yard lots</p>
+              </div>
+
+              <div class="cart-item__controls">
+                <div class="yard-selector">
+                  <button (click)="decrement(item)" [disabled]="item.yards <= item.fabric.minYards" aria-label="Decrease">−</button>
+                  <span>{{ item.yards }} yd</span>
+                  <button (click)="increment(item)" aria-label="Increase">+</button>
+                </div>
+                <p class="cart-item__subtotal">GH₵ {{ item.fabric.pricePerYard * item.yards }}</p>
+                <button class="cart-item__remove" (click)="remove(item)" aria-label="Remove item">Remove</button>
+              </div>
+            </div>
+          }
+
+          <button class="cart__clear" (click)="clearCart()">Clear Cart</button>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="cart__summary">
+          <h2>Order Summary</h2>
+
+          <div class="summary__lines">
+            @for (item of items; track item.fabric.id) {
+              <div class="summary__line">
+                <span>{{ item.fabric.name }} × {{ item.yards }} yd</span>
+                <span>GH₵ {{ item.fabric.pricePerYard * item.yards }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="summary__delivery">
+            <span>Delivery</span>
+            <span class="summary__delivery-note">Calculated at checkout</span>
+          </div>
+
+          <div class="summary__total">
+            <span>Total</span>
+            <span>GH₵ {{ total }}</span>
+          </div>
+
+          <p class="summary__note">
+            ✦ All fabrics are sold unsewn. Take your cloth to your tailor after purchase.
+          </p>
+
+          <a routerLink="/checkout" class="btn-primary summary__checkout">Proceed to Checkout</a>
+          <a routerLink="/shop" class="summary__continue">← Continue Shopping</a>
+        </div>
+
+      </div>
+    }
+  </div>
+</div>

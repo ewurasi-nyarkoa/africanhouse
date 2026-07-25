@@ -1,1 +1,61 @@
-<p>shop works!</p>
+<div class="shop">
+  <div class="shop__header">
+    <div class="container">
+      <h1>All Fabrics</h1>
+      <p>{{ filtered.length }} {{ filtered.length === 1 ? 'fabric' : 'fabrics' }} found</p>
+    </div>
+  </div>
+
+  <div class="container shop__body">
+
+    <!-- FILTERS -->
+    <aside class="shop__filters">
+      <div class="filter-group">
+        <h4>Occasion</h4>
+        <ul>
+          @for (cat of categories; track cat.value) {
+            <li>
+              <button
+                [class.active]="activeCategory === cat.value"
+                (click)="setCategory(cat.value)">
+                {{ cat.label }}
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="filter-group">
+        <h4>Material</h4>
+        @if (activeCategory !== 'funeral') {
+          <p class="filter-hint">Select Funeral to see Printex</p>
+        }
+        <ul>
+          @for (mat of visibleMaterials; track mat.value) {
+            <li>
+              <button
+                [class.active]="activeMaterial === mat.value"
+                (click)="setMaterial(mat.value)">
+                {{ mat.label }}
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+    </aside>
+
+    <!-- GRID -->
+    <div class="shop__grid">
+      @if (filtered.length === 0) {
+        <div class="shop__empty">
+          <p>No fabrics found for this filter.</p>
+          <button class="btn-outline" (click)="setCategory('all'); setMaterial('all')">Clear Filters</button>
+        </div>
+      }
+      @for (fabric of filtered; track fabric.id) {
+        <app-fabric-card [fabric]="fabric" />
+      }
+    </div>
+
+  </div>
+</div>

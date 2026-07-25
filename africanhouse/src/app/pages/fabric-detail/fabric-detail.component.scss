@@ -1,0 +1,213 @@
+.detail {
+  padding-bottom: 5rem;
+
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.25rem 1.5rem;
+    font-size: 0.8rem;
+    color: var(--grey);
+
+    a { transition: color 0.2s; &:hover { color: var(--black); } }
+    span { color: var(--light-grey); }
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    padding-top: 1rem;
+  }
+
+  &__image-wrap {
+    position: sticky;
+    top: 90px;
+  }
+
+  &__image {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    background: var(--light-grey);
+  }
+
+  &__badges {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  &__name {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 600;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+
+  &__colour {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 1rem;
+  }
+
+  &__price {
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    span { font-size: 0.875rem; color: var(--grey); font-weight: 400; }
+  }
+
+  &__desc {
+    color: var(--grey);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+
+  &__notice {
+    display: flex;
+    gap: 0.75rem;
+    background: var(--cream);
+    border: 1px solid var(--light-grey);
+    padding: 1rem;
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--grey);
+
+    span { color: var(--red); flex-shrink: 0; }
+    strong { color: var(--black); }
+  }
+
+  &__selector {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  &__min-note {
+    font-size: 0.75rem;
+    color: var(--grey);
+    background: var(--cream);
+    border-left: 2px solid var(--red);
+    padding: 0.3rem 0.6rem;
+    margin-bottom: 0.75rem;
+  }
+
+  &__subtotal {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--grey);
+    strong { color: var(--black); font-size: 1rem; }
+  }
+
+  &__add {
+    width: 100%;
+    margin-bottom: 1rem;
+    transition: background 0.2s;
+    &:disabled { opacity: 0.7; cursor: not-allowed; }
+  }
+
+  &__view-cart {
+    display: block;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--grey);
+    margin-bottom: 2rem;
+    transition: color 0.2s;
+    &:hover { color: var(--black); }
+  }
+
+  &__unavailable {
+    color: var(--grey);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border: 1px solid var(--light-grey);
+  }
+
+  &__delivery {
+    border-top: 1px solid var(--light-grey);
+    padding-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__not-found {
+    text-align: center;
+    padding: 5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    color: var(--grey);
+  }
+}
+
+.badge {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+
+  &--material { background: var(--black); color: var(--white); }
+  &--category { background: var(--light-grey); color: var(--black); }
+  &--out { background: var(--red); color: var(--white); }
+}
+
+.delivery-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--grey);
+  line-height: 1.5;
+
+  strong { color: var(--black); }
+  a { color: var(--black); text-decoration: underline; }
+}
+
+.yard-selector {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--light-grey);
+  width: fit-content;
+
+  button {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+    color: var(--black);
+    transition: background 0.2s;
+    &:hover { background: var(--light-grey); }
+  }
+
+  span {
+    padding: 0 1.25rem;
+    font-size: 1rem;
+    min-width: 80px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 900px) {
+  .detail__body {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .detail__image-wrap { position: static; }
+}
