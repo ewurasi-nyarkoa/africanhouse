@@ -41,6 +41,12 @@
     }
   }
 
+  &__error {
+    color: #ff6b6b;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+
   &__thanks {
     font-family: var(--font-display);
     font-size: 1.1rem;

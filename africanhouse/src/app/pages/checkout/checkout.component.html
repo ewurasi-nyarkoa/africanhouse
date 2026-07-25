@@ -97,6 +97,10 @@
           {{ placing ? 'Placing Order...' : 'Place Order — GH₵ ' + total }}
         </button>
 
+        @if (orderError) {
+          <p class="checkout__error">{{ orderError }}</p>
+        }
+
         <p class="checkout__terms">
           By placing your order you agree that all fabrics are sold unsewn. Delivery fees are confirmed after order placement.
         </p>

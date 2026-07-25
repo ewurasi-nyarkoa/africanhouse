@@ -9,6 +9,9 @@
         <input type="email" [(ngModel)]="email" name="email" placeholder="Your email address" required />
         <button type="submit" class="btn-primary">Notify Me</button>
       </form>
+      @if (error) {
+        <p class="subscribe__error">{{ error }}</p>
+      }
     } @else {
       <p class="subscribe__thanks">Thank you! We'll be in touch. ✦</p>
     }

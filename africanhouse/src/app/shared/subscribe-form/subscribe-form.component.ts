@@ -1,5 +1,6 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { SupabaseService } from '../../core/services/supabase.service';
 
 @Component({
   selector: 'app-subscribe-form',
@@ -11,12 +12,24 @@ import { FormsModule } from '@angular/forms';
 export class SubscribeFormComponent {
   email = '';
   submitted = false;
+  error = '';
 
-  onSubmit(): void {
+  constructor(
+    private supabase: SupabaseService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  async onSubmit(): Promise<void> {
     if (!this.email) return;
-    // TODO: connect to Supabase subscribers table
-    console.log('Subscribe:', this.email);
-    this.submitted = true;
-    this.email = '';
+    const { error } = await this.supabase.client
+      .from('subscribers')
+      .insert({ email: this.email });
+    if (error) {
+      this.error = 'Something went wrong. Please try again.';
+    } else {
+      this.submitted = true;
+      this.email = '';
+    }
+    this.cdr.markForCheck();
   }
 }

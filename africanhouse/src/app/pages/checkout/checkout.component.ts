@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { CartService } from '../../core/services/cart.service';
 import { CartItem } from '../../core/models/order';
 import { Title } from '@angular/platform-browser';
+import { SupabaseService } from '../../core/services/supabase.service';
 
 @Component({
   selector: 'app-checkout',
@@ -20,6 +21,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   total = 0;
   submitted = false;
   placing = false;
+  orderError = '';
   private destroy$ = new Subject<void>();
 
   paymentMethods = [
@@ -31,13 +33,13 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private cartService: CartService,
+    private supabase: SupabaseService,
     private cdr: ChangeDetectorRef,
     private title: Title
   ) {}
 
   ngOnInit(): void {
     this.title.setTitle('Checkout — African House');
-
     this.form = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(2)]],
       phone: ['', [Validators.required, Validators.pattern(/^0[0-9]{9}$/)]],
@@ -47,7 +49,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       momoNumber: [''],
     });
 
-    // conditionally require momo number for mobile money
     this.form.get('paymentMethod')!.valueChanges.pipe(
       takeUntil(this.destroy$)
     ).subscribe(method => {
@@ -61,7 +62,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.cdr.markForCheck();
     });
 
-    // trigger initial validation state
     this.form.get('paymentMethod')!.updateValueAndValidity();
 
     this.cartService.cart$.pipe(takeUntil(this.destroy$)).subscribe(items => {
@@ -80,21 +80,45 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     return this.form.get('paymentMethod')?.value;
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.form.invalid || this.items.length === 0) {
       this.form.markAllAsTouched();
       return;
     }
     this.placing = true;
+    this.orderError = '';
     this.cdr.markForCheck();
 
-    // TODO: send to backend (Supabase)
-    setTimeout(() => {
+    const { fullName, phone, location, deliveryNote, paymentMethod, momoNumber } = this.form.value;
+
+    const { error } = await this.supabase.client.from('orders').insert({
+      customer_name: fullName,
+      customer_phone: phone,
+      location,
+      delivery_note: deliveryNote,
+      payment_method: paymentMethod,
+      momo_number: momoNumber,
+      total_amount: this.total,
+      status: 'pending',
+      items: this.items.map(i => ({
+        fabric_id: i.fabric.id,
+        fabric_name: i.fabric.name,
+        material: i.fabric.material,
+        yards: i.yards,
+        price_per_yard: i.fabric.pricePerYard,
+        subtotal: i.fabric.pricePerYard * i.yards
+      }))
+    });
+
+    if (error) {
+      this.orderError = 'Something went wrong placing your order. Please call us on 0240 070 628.';
       this.placing = false;
+    } else {
       this.submitted = true;
       this.cartService.clearCart();
-      this.cdr.markForCheck();
-    }, 1500);
+    }
+    this.placing = false;
+    this.cdr.markForCheck();
   }
 
   hasError(field: string): boolean {

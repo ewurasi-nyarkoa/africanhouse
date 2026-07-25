@@ -44,6 +44,15 @@
     &:disabled { opacity: 0.6; cursor: not-allowed; }
   }
 
+  &__error {
+    font-size: 0.8rem;
+    color: var(--red);
+    text-align: center;
+    padding: 0.75rem;
+    border: 1px solid var(--red);
+    background: #fff5f5;
+  }
+
   &__terms {
     font-size: 0.75rem;
     color: var(--grey);
