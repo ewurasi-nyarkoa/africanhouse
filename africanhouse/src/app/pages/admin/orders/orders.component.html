@@ -34,17 +34,27 @@
               <p>{{ order.customer_phone }}</p>
               <p>{{ order.location }}</p>
               @if (order.delivery_note) {
-                <p class="order-card__note">Note: {{ order.delivery_note }}</p>
-              }
-              <p>Payment: {{ order.payment_method }}</p>
-              @if (order.momo_number) {
-                <p>MoMo: {{ order.momo_number }}</p>
+                <p class="order-card__note">📝 {{ order.delivery_note }}</p>
               }
             </div>
 
             <div class="order-card__items">
+              <p class="order-card__items-title">Items Ordered</p>
               @for (item of order.items; track item.fabric_id) {
-                <p>{{ item.fabric_name }} × {{ item.yards }} yds — GH₵ {{ item.subtotal }}</p>
+                <div class="order-item">
+                  <div class="order-item__image">
+                    <img [src]="item.image_url" [alt]="item.fabric_name" />
+                  </div>
+                  <div class="order-item__details">
+                    <div class="order-item__name">{{ item.fabric_name }}</div>
+                    <div class="order-item__meta">
+                      <span>{{ item.material | uppercase }}</span>
+                      <span>{{ item.yards }} yards</span>
+                      <span>GH₵ {{ item.price_per_yard }}/yd</span>
+                      <strong>GH₵ {{ item.subtotal }}</strong>
+                    </div>
+                  </div>
+                </div>
               }
             </div>
 

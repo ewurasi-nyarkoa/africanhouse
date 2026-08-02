@@ -1,0 +1,101 @@
+<div class="tracking">
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="tracking__header">
+      <h1>Track Your Order</h1>
+      <p>Enter your order ID to see the current status of your delivery.</p>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="tracking__search">
+      <input
+        type="text"
+        [(ngModel)]="orderId"
+        placeholder="Enter your Order ID e.g. 12"
+        (keyup.enter)="search()"
+      />
+      <button class="btn-primary" (click)="search()" [disabled]="loading">
+        {{ loading ? 'Searching...' : 'Track Order' }}
+      </button>
+    </div>
+
+    <!-- NOT FOUND -->
+    @if (notFound) {
+      <div class="tracking__not-found">
+        <p>No order found with that ID. Please check and try again.</p>
+        <p>Need help? Call us on <a href="tel:+233240070628">0240 070 628</a></p>
+      </div>
+    }
+
+    <!-- ORDER FOUND -->
+    @if (order) {
+      <div class="tracking__result">
+
+        <!-- ORDER INFO -->
+        <div class="tracking__info">
+          <div class="tracking__info-row">
+            <span>Order ID</span>
+            <strong>#{{ order.id }}</strong>
+          </div>
+          <div class="tracking__info-row">
+            <span>Customer</span>
+            <strong>{{ order.customer_name }}</strong>
+          </div>
+          <div class="tracking__info-row">
+            <span>Delivery to</span>
+            <strong>{{ order.location }}</strong>
+          </div>
+          <div class="tracking__info-row">
+            <span>Total</span>
+            <strong>GH₵ {{ order.total_amount }}</strong>
+          </div>
+        </div>
+
+        <!-- CURRENT STATUS BANNER -->
+        <div class="tracking__status-banner">
+          <span class="tracking__status-icon">{{ currentStep?.icon }}</span>
+          <div>
+            <p class="tracking__status-label">{{ currentStep?.label }}</p>
+            <p class="tracking__status-desc">{{ currentStep?.description }}</p>
+          </div>
+        </div>
+
+        <!-- STEPPER -->
+        <div class="stepper">
+          @for (step of steps; track step.value) {
+            <div class="stepper__step"
+              [class.done]="isStepDone(order.status, step.value)"
+              [class.active]="isStepActive(order.status, step.value)">
+              <div class="stepper__icon-wrap">
+                <span class="stepper__icon">{{ step.icon }}</span>
+              </div>
+              <p class="stepper__label">{{ step.label }}</p>
+            </div>
+          }
+        </div>
+
+        <!-- ITEMS -->
+        <div class="tracking__items">
+          <h3>Items Ordered</h3>
+          @for (item of order.items; track item.fabric_id) {
+            <div class="tracking__item">
+              <p>{{ item.fabric_name }}</p>
+              <p>{{ item.yards }} yards — GH₵ {{ item.subtotal }}</p>
+            </div>
+          }
+        </div>
+
+        <!-- CONTACT -->
+        <div class="tracking__contact">
+          <p>Questions about your order?</p>
+          <a href="tel:+233240070628" class="tracking__phone">📞 0240 070 628</a>
+        </div>
+
+        <a routerLink="/shop" class="tracking__continue">Continue Shopping →</a>
+
+      </div>
+    }
+
+  </div>
+</div>

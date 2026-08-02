@@ -9,6 +9,7 @@
     <ul class="navbar__links" [class.open]="menuOpen">
       <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="menuOpen=false">Home</a></li>
       <li><a routerLink="/shop" routerLinkActive="active" (click)="menuOpen=false">Shop</a></li>
+      <li><a routerLink="/track" routerLinkActive="active" (click)="menuOpen=false">Track Order</a></li>
       <li>
         <a routerLink="/cart" routerLinkActive="active" class="navbar__cart" (click)="menuOpen=false">
           Cart

@@ -37,12 +37,18 @@
   &__note { font-style: italic; }
 
   &__items {
-    font-size: 0.8rem;
-    color: var(--grey);
     margin-bottom: 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.5rem;
+  }
+
+  &__items-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--grey);
+    margin-bottom: 0.4rem;
   }
 
   &__actions {
@@ -63,6 +69,47 @@
       outline: none;
       &:focus { border-color: var(--black); }
     }
+  }
+}
+
+.order-item {
+  background: var(--cream);
+  border: 1px solid var(--light-grey);
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+
+  &__image {
+    width: 64px;
+    height: 80px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: var(--light-grey);
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  &__name {
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: var(--font-display);
+  }
+
+  &__meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    color: var(--grey);
+
+    strong { color: var(--black); font-size: 0.875rem; }
   }
 }
 

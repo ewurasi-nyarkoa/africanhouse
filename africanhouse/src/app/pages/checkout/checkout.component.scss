@@ -204,6 +204,20 @@
   }
 }
 
+.paystack-info {
+  background: #f0faf0;
+  border: 1px solid #c3e6c3;
+  padding: 0.875rem 1rem;
+  margin-top: 0.75rem;
+
+  p {
+    font-size: 0.8rem;
+    color: #2d6a2d;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
 .bank-details {
   background: var(--cream);
   border: 1px solid var(--light-grey);
@@ -295,6 +309,30 @@
     color: var(--grey);
     line-height: 1.7;
     max-width: 400px;
+  }
+
+  &__order-id {
+    background: var(--cream);
+    border: 1px solid var(--light-grey);
+    padding: 1rem 2rem;
+    text-align: center;
+    width: 100%;
+
+    p { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--grey); margin-bottom: 0.25rem; }
+    strong { font-size: 1.75rem; font-family: var(--font-display); }
+  }
+
+  &__redirect {
+    font-size: 0.75rem;
+    color: var(--grey);
+    margin-top: 0.5rem;
+  }
+
+  &__continue {
+    font-size: 0.875rem;
+    color: var(--grey);
+    transition: color 0.2s;
+    &:hover { color: var(--black); }
   }
 
   &__info {

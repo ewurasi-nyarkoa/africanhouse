@@ -3,12 +3,21 @@
   <div class="container success">
     <div class="success__icon">✦</div>
     <h1>Order Received!</h1>
-    <p>Thank you for your order. We will contact you on <strong>{{ form.get('phone')?.value }}</strong> to confirm payment and arrange delivery.</p>
+    <p>Thank you! Your payment was successful. We will arrange delivery and contact you on <strong>{{ form.get('phone')?.value }}</strong>.</p>
+
+    <div class="success__order-id">
+      <p>Your Order ID</p>
+      <strong>#{{ orderId }}</strong>
+    </div>
+
     <div class="success__info">
       <p>📍 African House, Nsawam, Eastern Region</p>
       <p>📞 <a href="tel:+233240070628">0240 070 628</a></p>
     </div>
-    <a routerLink="/shop" class="btn-primary">Continue Shopping</a>
+
+    <a [routerLink]="['/track', orderId]" class="btn-primary">Track Your Order</a>
+    <a routerLink="/shop" class="success__continue">Continue Shopping</a>
+    <p class="success__redirect">Redirecting to shop in 5 seconds...</p>
   </div>
 
 } @else {
@@ -54,47 +63,16 @@
           </div>
         </fieldset>
 
-        <!-- PAYMENT METHOD -->
+        <!-- PAYMENT -->
         <fieldset class="checkout__section">
-          <legend>Payment Method</legend>
-
-          <div class="payment-methods">
-            @for (method of paymentMethods; track method.value) {
-              <label class="payment-option" [class.active]="selectedMethod === method.value">
-                <input type="radio" formControlName="paymentMethod" [value]="method.value" />
-                <span class="payment-option__icon">{{ method.icon }}</span>
-                <span class="payment-option__label">{{ method.label }}</span>
-              </label>
-            }
+          <legend>Payment</legend>
+          <div class="paystack-info">
+            <p>💳 You'll complete payment securely via Paystack (card or mobile money). Your order is saved only after successful payment.</p>
           </div>
-
-          <!-- MOMO NUMBER -->
-          @if (isMobileMoney) {
-            <div class="field field--momo">
-              <label for="momoNumber">
-                {{ selectedMethod === 'mtn-momo' ? 'MTN MoMo' : 'Vodafone Cash' }} Number
-              </label>
-              <input id="momoNumber" type="tel" formControlName="momoNumber" placeholder="e.g. 0244000000" />
-              @if (hasError('momoNumber')) {
-                <span class="field__error">Enter a valid mobile money number</span>
-              }
-            </div>
-          }
-
-          <!-- BANK TRANSFER DETAILS -->
-          @if (selectedMethod === 'bank-transfer') {
-            <div class="bank-details">
-              <p class="bank-details__title">Transfer to:</p>
-              <div class="bank-details__row"><span>Bank</span><strong>GCB Bank</strong></div>
-              <div class="bank-details__row"><span>Account Name</span><strong>African House</strong></div>
-              <div class="bank-details__row"><span>Account Number</span><strong>XXXX-XXXX-XXXX</strong></div>
-              <p class="bank-details__note">Use your phone number as the payment reference. We will confirm once payment is received.</p>
-            </div>
-          }
         </fieldset>
 
         <button type="submit" class="btn-primary checkout__submit" [disabled]="placing">
-          {{ placing ? 'Placing Order...' : 'Place Order — GH₵ ' + total }}
+          {{ placing ? 'Processing...' : 'Pay Now — GH₵ ' + total }}
         </button>
 
         @if (orderError) {
