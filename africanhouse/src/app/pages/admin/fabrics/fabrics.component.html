@@ -1,0 +1,113 @@
+<div class="admin">
+  <aside class="admin__sidebar">
+    <h2>African House</h2>
+    <p>Admin Panel</p>
+    <nav>
+      <a routerLink="/admin/dashboard">📊 Dashboard</a>
+      <a routerLink="/admin/fabrics">🧵 Fabrics</a>
+      <a routerLink="/admin/orders">📦 Orders</a>
+    </nav>
+    <button (click)="logout()" class="admin__logout">Sign Out</button>
+  </aside>
+
+  <main class="admin__main">
+    <div class="admin__top">
+      <h1>Fabrics</h1>
+      <button class="btn-primary" (click)="showForm = true">+ Add Fabric</button>
+    </div>
+
+    <!-- FORM -->
+    @if (showForm) {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="fabric-form">
+        <h2>{{ editingId ? 'Edit Fabric' : 'Add New Fabric' }}</h2>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Name</label>
+            <input type="text" formControlName="name" placeholder="e.g. GTP Classic" />
+          </div>
+          <div class="field">
+            <label>Category</label>
+            <select formControlName="category">
+              @for (cat of categories; track cat) {
+                <option [value]="cat">{{ cat }}</option>
+              }
+            </select>
+          </div>
+          <div class="field">
+            <label>Material</label>
+            <select formControlName="material">
+              @for (mat of materials; track mat) {
+                <option [value]="mat">{{ mat }}</option>
+              }
+            </select>
+          </div>
+          <div class="field">
+            <label>Colour Pairing</label>
+            <select formControlName="colour_pairing">
+              @for (cp of colourPairings; track cp) {
+                <option [value]="cp">{{ cp }}</option>
+              }
+            </select>
+          </div>
+          <div class="field">
+            <label>Price per Yard (GH₵)</label>
+            <input type="number" formControlName="price_per_yard" />
+          </div>
+          <div class="field field--check">
+            <label>
+              <input type="checkbox" formControlName="in_stock" />
+              In Stock
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Description</label>
+          <textarea formControlName="description" rows="3"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Fabric Image</label>
+          <input type="file" accept="image/*" (change)="onFileChange($event)" />
+          <p class="field__hint">Min/yard step is set automatically based on material</p>
+        </div>
+
+        @if (error) {
+          <p class="form-error">{{ error }}</p>
+        }
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="saving">
+            {{ saving ? 'Saving...' : editingId ? 'Update Fabric' : 'Add Fabric' }}
+          </button>
+          <button type="button" class="btn-outline" (click)="cancelForm()">Cancel</button>
+        </div>
+      </form>
+    }
+
+    <!-- FABRIC LIST -->
+    @if (loading) {
+      <p class="admin__loading">Loading fabrics...</p>
+    } @else {
+      <div class="fabric-list">
+        @for (fabric of fabrics; track fabric.id) {
+          <div class="fabric-row">
+            <img [src]="fabric.image_url" [alt]="fabric.name" class="fabric-row__img" />
+            <div class="fabric-row__info">
+              <p class="fabric-row__name">{{ fabric.name }}</p>
+              <p class="fabric-row__meta">{{ fabric.material }} · {{ fabric.category }} · GH₵ {{ fabric.price_per_yard }}/yd</p>
+              <span class="fabric-row__stock" [class.out]="!fabric.in_stock">
+                {{ fabric.in_stock ? 'In Stock' : 'Out of Stock' }}
+              </span>
+            </div>
+            <div class="fabric-row__actions">
+              <button class="btn-outline" (click)="editFabric(fabric)">Edit</button>
+              <button class="fabric-row__delete" (click)="deleteFabric(fabric.id)">Delete</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

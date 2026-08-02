@@ -57,7 +57,7 @@ export class FabricService {
       pricePerYard: Number(row.price_per_yard),
       imageUrl: row.image_url,
       inStock: row.in_stock,
-      minYards: row.min_yards ? Number(row.min_yards) : bulkMaterial ? 6 : 2,
+      minYards: row.min_yard ? Number(row.min_yard) : bulkMaterial ? 6 : 2,
       yardStep: row.yard_step ? Number(row.yard_step) : bulkMaterial ? 6 : 2
     };
   }

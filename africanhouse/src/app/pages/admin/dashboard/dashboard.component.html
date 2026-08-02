@@ -1,0 +1,44 @@
+<div class="admin">
+  <aside class="admin__sidebar">
+    <h2>African House</h2>
+    <p>Admin Panel</p>
+    <nav>
+      <a routerLink="/admin/dashboard">📊 Dashboard</a>
+      <a routerLink="/admin/fabrics">🧵 Fabrics</a>
+      <a routerLink="/admin/orders">📦 Orders</a>
+    </nav>
+    <button (click)="logout()" class="admin__logout">Sign Out</button>
+  </aside>
+
+  <main class="admin__main">
+    <h1>Dashboard</h1>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat__icon">🧵</span>
+        <p class="stat__value">{{ stats.fabrics }}</p>
+        <p class="stat__label">Total Fabrics</p>
+      </div>
+      <div class="stat">
+        <span class="stat__icon">📦</span>
+        <p class="stat__value">{{ stats.orders }}</p>
+        <p class="stat__label">Total Orders</p>
+      </div>
+      <div class="stat stat--alert">
+        <span class="stat__icon">⏳</span>
+        <p class="stat__value">{{ stats.pending }}</p>
+        <p class="stat__label">Pending Orders</p>
+      </div>
+      <div class="stat">
+        <span class="stat__icon">📧</span>
+        <p class="stat__value">{{ stats.subscribers }}</p>
+        <p class="stat__label">Subscribers</p>
+      </div>
+    </div>
+
+    <div class="quick-links">
+      <a routerLink="/admin/fabrics" class="btn-primary">Manage Fabrics</a>
+      <a routerLink="/admin/orders" class="btn-outline">View Orders</a>
+    </div>
+  </main>
+</div>

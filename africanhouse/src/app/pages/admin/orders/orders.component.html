@@ -1,0 +1,77 @@
+<div class="admin">
+  <aside class="admin__sidebar">
+    <h2>African House</h2>
+    <p>Admin Panel</p>
+    <nav>
+      <a routerLink="/admin/dashboard">📊 Dashboard</a>
+      <a routerLink="/admin/fabrics">🧵 Fabrics</a>
+      <a routerLink="/admin/orders">📦 Orders</a>
+    </nav>
+    <button (click)="logout()" class="admin__logout">Sign Out</button>
+  </aside>
+
+  <main class="admin__main">
+    <h1>Orders</h1>
+
+    @if (loading) {
+      <p class="admin__loading">Loading orders...</p>
+    } @else if (orders.length === 0) {
+      <p class="admin__empty">No orders yet.</p>
+    } @else {
+      <div class="orders">
+        @for (order of orders; track order.id) {
+          <div class="order-card">
+            <div class="order-card__header">
+              <div>
+                <p class="order-card__id">Order #{{ order.id }}</p>
+                <p class="order-card__date">{{ order.created_at | date:'dd MMM yyyy, HH:mm' }}</p>
+              </div>
+              <span class="order-card__total">GH₵ {{ order.total_amount }}</span>
+            </div>
+
+            <div class="order-card__customer">
+              <p><strong>{{ order.customer_name }}</strong></p>
+              <p>{{ order.customer_phone }}</p>
+              <p>{{ order.location }}</p>
+              @if (order.delivery_note) {
+                <p class="order-card__note">Note: {{ order.delivery_note }}</p>
+              }
+              <p>Payment: {{ order.payment_method }}</p>
+              @if (order.momo_number) {
+                <p>MoMo: {{ order.momo_number }}</p>
+              }
+            </div>
+
+            <div class="order-card__items">
+              @for (item of order.items; track item.fabric_id) {
+                <p>{{ item.fabric_name }} × {{ item.yards }} yds — GH₵ {{ item.subtotal }}</p>
+              }
+            </div>
+
+            <!-- STATUS STEPPER -->
+            <div class="stepper">
+              @for (step of statuses; track step.value) {
+                <div class="stepper__step" [class.active]="order.status === step.value" [class.done]="isStepDone(order.status, step.value)">
+                  <div class="stepper__icon">{{ step.icon }}</div>
+                  <p class="stepper__label">{{ step.label }}</p>
+                </div>
+              }
+            </div>
+
+            <!-- UPDATE STATUS -->
+            <div class="order-card__actions">
+              <label>Update Status:</label>
+              <select (change)="updateStatus(order.id, $any($event.target).value)">
+                @for (step of statuses; track step.value) {
+                  <option [value]="step.value" [selected]="order.status === step.value">
+                    {{ step.icon }} {{ step.label }}
+                  </option>
+                }
+              </select>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

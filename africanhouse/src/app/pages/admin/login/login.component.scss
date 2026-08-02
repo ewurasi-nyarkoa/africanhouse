@@ -1,0 +1,71 @@
+.login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cream);
+
+  &__box {
+    background: var(--white);
+    border: 1px solid var(--light-grey);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 400px;
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      margin-bottom: 0.25rem;
+    }
+
+    p {
+      color: var(--grey);
+      font-size: 0.875rem;
+      margin-bottom: 2rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 0.875rem;
+      &:disabled { opacity: 0.6; cursor: not-allowed; }
+    }
+  }
+
+  &__error {
+    font-size: 0.8rem;
+    color: var(--red);
+    padding: 0.5rem;
+    border: 1px solid var(--red);
+    background: #fff5f5;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  label {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+
+  input {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--light-grey);
+    background: var(--cream);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    &:focus { border-color: var(--black); background: var(--white); }
+  }
+}
