@@ -5,10 +5,13 @@ import { takeUntil } from 'rxjs/operators';
 import { FabricService } from '../../core/services/fabric.service';
 import { FabricCardComponent } from '../../shared/fabric-card/fabric-card.component';
 import { Fabric } from '../../core/models/fabric';
+import {
+  MAIN_CATEGORIES,
+  getSubcategoriesForCategory,
+  SubcategoryOption,
+  MainCategory,
+} from '../../core/models/filter-config';
 import { Title, Meta } from '@angular/platform-browser';
-
-type Category = Fabric['category'] | 'all';
-type Material = Fabric['material'] | 'all';
 
 @Component({
   selector: 'app-shop',
@@ -22,30 +25,13 @@ export class ShopComponent implements OnInit, OnDestroy {
   filtered: Fabric[] = [];
   private destroy$ = new Subject<void>();
 
-  activeCategory: Category = 'all';
-  activeMaterial: Material = 'all';
+  activeCategory: MainCategory = 'all';
+  activeSubcategory = '';
 
-  categories: { value: Category; label: string }[] = [
-    { value: 'all', label: 'All' },
-    { value: 'everyday', label: 'Everyday' },
-    { value: 'funeral', label: 'Funeral' },
-    { value: 'kente', label: 'Kente' },
-  ];
+  readonly categories = MAIN_CATEGORIES;
 
-  allMaterials: { value: Material; label: string; funeralOnly?: boolean }[] = [
-    { value: 'all', label: 'All Materials' },
-    { value: 'gtp', label: 'GTP' },
-    { value: 'holland', label: 'Holland' },
-    { value: 'soso', label: 'Soso' },
-    { value: 'small-material', label: 'Small Material' },
-    { value: 'kente', label: 'Kente' },
-    { value: 'printex', label: 'Printex', funeralOnly: true },
-  ];
-
-  get visibleMaterials() {
-    return this.allMaterials.filter(m =>
-      !m.funeralOnly || this.activeCategory === 'funeral'
-    );
+  get subcategoryOptions(): SubcategoryOption[] {
+    return getSubcategoriesForCategory(this.activeCategory);
   }
 
   constructor(
@@ -58,7 +44,10 @@ export class ShopComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.title.setTitle('Shop Fabrics — African House');
-    this.meta.updateTag({ name: 'description', content: 'Browse GTP, Holland, Printex, Soso, Kente and small material fabrics by the yard. Filter by occasion.' });
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Browse GTP, Holland, Printex, Soso, Kente and more fabrics by the yard. Filter by occasion and type.'
+    });
 
     combineLatest([
       this.fabricService.getAll(),
@@ -67,31 +56,37 @@ export class ShopComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(([fabrics, params]) => {
       this.allFabrics = fabrics;
-      if (params['category']) this.activeCategory = params['category'] as Category;
+      if (params['category']) {
+        this.activeCategory = params['category'] as MainCategory;
+        this.activeSubcategory = '';
+      }
       this.applyFilters();
       this.cdr.markForCheck();
     });
   }
 
-  setCategory(category: Category): void {
+  setCategory(category: MainCategory): void {
     this.activeCategory = category;
-    // reset printex selection if switching away from funeral
-    if (category !== 'funeral' && this.activeMaterial === 'printex') {
-      this.activeMaterial = 'all';
-    }
+    this.activeSubcategory = '';
     this.applyFilters();
   }
 
-  setMaterial(material: Material): void {
-    this.activeMaterial = material;
+  setSubcategory(subcategory: string): void {
+    this.activeSubcategory = subcategory;
+    this.applyFilters();
+  }
+
+  clearFilters(): void {
+    this.activeCategory = 'all';
+    this.activeSubcategory = '';
     this.applyFilters();
   }
 
   private applyFilters(): void {
     this.filtered = this.allFabrics.filter(f => {
       const categoryMatch = this.activeCategory === 'all' || f.category === this.activeCategory;
-      const materialMatch = this.activeMaterial === 'all' || f.material === this.activeMaterial;
-      return categoryMatch && materialMatch;
+      const subcategoryMatch = !this.activeSubcategory || f.subcategory === this.activeSubcategory;
+      return categoryMatch && subcategoryMatch;
     });
   }
 

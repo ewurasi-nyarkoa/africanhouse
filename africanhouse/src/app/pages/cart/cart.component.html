@@ -10,7 +10,6 @@
     } @else {
       <div class="cart__layout">
 
-        <!-- ITEMS -->
         <div class="cart__items">
           @for (item of items; track item.fabric.id) {
             <div class="cart-item">
@@ -20,16 +19,24 @@
 
               <div class="cart-item__info">
                 <h3>{{ item.fabric.name }}</h3>
-                <p class="cart-item__meta">{{ item.fabric.material | titlecase }} · {{ item.fabric.colourPairing }}</p>
+                <p class="cart-item__meta">{{ item.fabric.material | titlecase }} · {{ item.fabric.subcategory || item.fabric.colourPairing }}</p>
                 <p class="cart-item__price">GH₵ {{ item.fabric.pricePerYard }} / yard</p>
-                <p class="cart-item__min">Min. {{ item.fabric.minYards }} yds · sold in {{ item.fabric.yardStep }}-yard lots</p>
+                <p class="cart-item__min">
+                  Min. {{ item.fabric.minYards }} yds &middot; {{ item.fabric.availableYards }} yds available
+                </p>
               </div>
 
               <div class="cart-item__controls">
                 <div class="yard-selector">
-                  <button (click)="decrement(item)" [disabled]="item.yards <= item.fabric.minYards" aria-label="Decrease">−</button>
+                  <button
+                    (click)="decrement(item)"
+                    [disabled]="!canDecrement(item)"
+                    aria-label="Decrease">−</button>
                   <span>{{ item.yards }} yd</span>
-                  <button (click)="increment(item)" aria-label="Increase">+</button>
+                  <button
+                    (click)="increment(item)"
+                    [disabled]="!canIncrement(item)"
+                    aria-label="Increase">+</button>
                 </div>
                 <p class="cart-item__subtotal">GH₵ {{ item.fabric.pricePerYard * item.yards }}</p>
                 <button class="cart-item__remove" (click)="remove(item)" aria-label="Remove item">Remove</button>
@@ -40,7 +47,6 @@
           <button class="cart__clear" (click)="clearCart()">Clear Cart</button>
         </div>
 
-        <!-- SUMMARY -->
         <div class="cart__summary">
           <h2>Order Summary</h2>
 

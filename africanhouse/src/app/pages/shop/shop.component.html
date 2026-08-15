@@ -8,8 +8,8 @@
 
   <div class="container shop__body">
 
-    <!-- FILTERS -->
     <aside class="shop__filters">
+
       <div class="filter-group">
         <h4>Occasion</h4>
         <ul>
@@ -25,31 +25,37 @@
         </ul>
       </div>
 
-      <div class="filter-group">
-        <h4>Material</h4>
-        @if (activeCategory !== 'funeral') {
-          <p class="filter-hint">Select Funeral to see Printex</p>
-        }
-        <ul>
-          @for (mat of visibleMaterials; track mat.value) {
+      @if (activeCategory !== 'all' && subcategoryOptions.length > 0) {
+        <div class="filter-group">
+          <h4>Type</h4>
+          <ul>
             <li>
               <button
-                [class.active]="activeMaterial === mat.value"
-                (click)="setMaterial(mat.value)">
-                {{ mat.label }}
+                [class.active]="activeSubcategory === ''"
+                (click)="setSubcategory('')">
+                All
               </button>
             </li>
-          }
-        </ul>
-      </div>
+            @for (sub of subcategoryOptions; track sub.value) {
+              <li>
+                <button
+                  [class.active]="activeSubcategory === sub.value"
+                  (click)="setSubcategory(sub.value)">
+                  {{ sub.label }}
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
     </aside>
 
-    <!-- GRID -->
     <div class="shop__grid">
       @if (filtered.length === 0) {
         <div class="shop__empty">
           <p>No fabrics found for this filter.</p>
-          <button class="btn-outline" (click)="setCategory('all'); setMaterial('all')">Clear Filters</button>
+          <button class="btn-outline" (click)="clearFilters()">Clear Filters</button>
         </div>
       }
       @for (fabric of filtered; track fabric.id) {

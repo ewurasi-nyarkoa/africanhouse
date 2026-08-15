@@ -4,15 +4,18 @@
     <!-- BRAND -->
     <div class="footer__brand">
       <a routerLink="/" class="footer__logo">African House</a>
-      <p>A fabric house, not a tailor. Every length we sell arrives unsewn — yours to design, yours to wear.</p>
+      <p class="footer__tagline-text">A fabric house, not a tailor. Every length we sell arrives unsewn — yours to design, yours to wear.</p>
       <a href="tel:+233240070628" class="footer__phone">
-        <span>📞</span> 0240 070 628
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/>
+        </svg>
+        0240 070 628
       </a>
     </div>
 
     <!-- SHOP -->
     <div class="footer__col">
-      <h4>Shop</h4>
+      <h4 class="footer__col-heading">Shop</h4>
       <ul>
         <li><a routerLink="/shop">All Fabrics</a></li>
         <li><a routerLink="/shop" [queryParams]="{category: 'everyday'}">Everyday</a></li>
@@ -23,32 +26,53 @@
 
     <!-- WHOLESALE & INFO -->
     <div class="footer__col">
-      <h4>Wholesale & Bulk</h4>
+      <h4 class="footer__col-heading">Wholesale &amp; Bulk</h4>
       <p class="footer__col-text">
-        We serve retail and wholesale customers. Salon owners, tailors, schools and groups ordering uniform fabric for a day are welcome — call us directly to discuss bulk pricing.
+        We serve retail and wholesale customers. Salon owners, tailors, schools and groups ordering uniform fabric are welcome — call us to discuss bulk pricing.
       </p>
       <a href="tel:+233240070628" class="footer__cta">Call for Wholesale Pricing</a>
     </div>
 
     <!-- DELIVERY & LOCATION -->
     <div class="footer__col">
-      <h4>Delivery & Location</h4>
-      <ul>
+      <h4 class="footer__col-heading">Delivery &amp; Location</h4>
+      <ul class="footer__info-list">
         <li>
-          <span class="footer__icon">📍</span>
-          Nsawam, Eastern Region, Ghana
+          <span class="footer__info-icon" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </span>
+          <span>Amasaman, Greater Accra Region, Ghana</span>
         </li>
         <li>
-          <span class="footer__icon">🚚</span>
-          Nationwide delivery available at a fee
+          <span class="footer__info-icon" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13" rx="1"/>
+              <path d="M16 8h4l3 3v5h-7V8z"/>
+              <circle cx="5.5" cy="18.5" r="2.5"/>
+              <circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </span>
+          <span>Nationwide delivery available</span>
         </li>
         <li>
-          <span class="footer__icon">🏪</span>
-          Walk-in & pickup welcome
+          <span class="footer__info-icon" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </span>
+          <span>Walk-in &amp; pickup welcome</span>
         </li>
         <li>
-          <span class="footer__icon">📦</span>
-          Retail & wholesale orders
+          <span class="footer__info-icon" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+            </svg>
+          </span>
+          <span>Retail &amp; wholesale orders</span>
         </li>
       </ul>
     </div>
@@ -59,7 +83,7 @@
   <div class="footer__bottom">
     <div class="container footer__bottom-inner">
       <p>&copy; {{ currentYear }} African House. All rights reserved.</p>
-      <p class="footer__tagline">Fabric, not finished garments. Yours to design.</p>
+      <p class="footer__bottom-tagline">Fabric, not finished garments. Yours to design.</p>
     </div>
   </div>
 </footer>

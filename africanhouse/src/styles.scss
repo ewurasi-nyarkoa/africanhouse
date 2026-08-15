@@ -1,31 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
+
+@import 'app/pages/admin/admin.shared';
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --cream: #f9f5f0;
-  --black: #1a1a1a;
-  --red: #8b1a1a;
-  --grey: #6b6b6b;
-  --light-grey: #e8e3dc;
-  --white: #ffffff;
+  /* ── Brand colours ── */
+  --burgundy:     #6B1E2B;
+  --burgundy-dark:#4e1620;
+  --ivory:        #F6F1E9;
+  --ivory-dark:   #EDE6D8;
+  --gold:         #C9A227;
+  --gold-light:   #dbb84a;
+  --charcoal:     #2B2B2B;
+  --grey:         #6b6b6b;
+  --light-grey:   #E5DED3;
+  --white:        #ffffff;
+
+  /* ── Legacy aliases (keep existing component references working) ── */
+  --cream:        var(--ivory);
+  --black:        var(--charcoal);
+  --red:          var(--burgundy);
+
+  /* ── Typography ── */
   --font-display: 'Cormorant Garamond', serif;
-  --font-body: 'Inter', sans-serif;
+  --font-body:    'Inter', sans-serif;
+
+  /* ── Spacing scale ── */
+  --space-xs:  0.5rem;
+  --space-sm:  1rem;
+  --space-md:  1.5rem;
+  --space-lg:  2.5rem;
+  --space-xl:  4rem;
+  --space-2xl: 6rem;
+
+  /* ── Transitions ── */
+  --ease: 0.25s ease;
+  --ease-slow: 0.4s ease;
+
+  /* ── Navbar height (used in sticky offsets) ── */
+  --nav-height: 80px;
 }
 
+/* ────────────────────────────────────────────
+   RESET & BASE
+──────────────────────────────────────────── */
 html, body {
-  background: var(--cream);
-  color: var(--black);
+  background: var(--ivory);
+  color: var(--charcoal);
   font-family: var(--font-body);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 main {
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - var(--nav-height));
 }
 
-a { color: inherit; text-decoration: none; }
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
 button {
   cursor: pointer;
@@ -34,32 +71,134 @@ button {
   font-family: var(--font-body);
 }
 
-img { max-width: 100%; display: block; }
+img {
+  max-width: 100%;
+  display: block;
+}
 
+/* ────────────────────────────────────────────
+   LAYOUT UTILITY
+──────────────────────────────────────────── */
 .container {
-  max-width: 1200px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 var(--space-md);
 }
 
+/* ────────────────────────────────────────────
+   BUTTONS
+──────────────────────────────────────────── */
+
+/* Primary — burgundy fill */
 .btn-primary {
-  background: var(--black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--burgundy);
   color: var(--white);
-  padding: 0.75rem 1.5rem;
-  font-size: 0.875rem;
-  letter-spacing: 0.05em;
+  padding: 0.8rem 2rem;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  transition: background 0.2s;
-  &:hover { background: var(--red); }
+  transition: background var(--ease), color var(--ease);
+  border: 1px solid var(--burgundy);
+
+  &:hover {
+    background: var(--burgundy-dark);
+    border-color: var(--burgundy-dark);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
 }
 
+/* Outline — bordered, fills on hover */
 .btn-outline {
-  border: 1px solid var(--black);
-  color: var(--black);
-  padding: 0.75rem 1.5rem;
-  font-size: 0.875rem;
-  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--charcoal);
+  padding: 0.8rem 2rem;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  transition: all 0.2s;
-  &:hover { background: var(--black); color: var(--white); }
+  border: 1px solid var(--charcoal);
+  transition: background var(--ease), color var(--ease), border-color var(--ease);
+
+  &:hover {
+    background: var(--charcoal);
+    color: var(--white);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+}
+
+/* Ghost — minimal, text-only feel */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  color: var(--charcoal);
+  padding: 0.5rem 0;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--ease), color var(--ease);
+
+  &:hover {
+    border-color: var(--burgundy);
+    color: var(--burgundy);
+  }
+}
+
+/* ────────────────────────────────────────────
+   SECTION TITLE UTILITY
+──────────────────────────────────────────── */
+.section-eyebrow {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--charcoal);
+}
+
+/* ────────────────────────────────────────────
+   DIVIDER UTILITY
+──────────────────────────────────────────── */
+.gold-rule {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  margin-bottom: 1.5rem;
 }

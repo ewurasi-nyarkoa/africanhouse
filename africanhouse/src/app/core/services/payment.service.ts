@@ -19,7 +19,7 @@ export class PaymentService {
       const handler = PaystackPop.setup({
         key: environment.paystackKey,
         email,
-        amount: Math.round(amountGhs * 100), // Paystack uses pesewas
+        amount: Math.round(amountGhs * 100),
         currency: 'GHS',
         metadata,
         callback: (response: PaystackResult) => resolve(response),

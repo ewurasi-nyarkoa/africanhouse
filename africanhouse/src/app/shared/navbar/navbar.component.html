@@ -1,23 +1,104 @@
-<nav class="navbar">
+<nav class="navbar" [class.scrolled]="scrolled">
   <div class="container navbar__inner">
-    <a routerLink="/" class="navbar__logo">African House</a>
 
-    <button class="navbar__burger" (click)="menuOpen = !menuOpen" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
-
-    <ul class="navbar__links" [class.open]="menuOpen">
-      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="menuOpen=false">Home</a></li>
-      <li><a routerLink="/shop" routerLinkActive="active" (click)="menuOpen=false">Shop</a></li>
-      <li><a routerLink="/track" routerLinkActive="active" (click)="menuOpen=false">Track Order</a></li>
+    <!-- LEFT: text links -->
+    <ul class="navbar__left" [class.open]="menuOpen">
       <li>
-        <a routerLink="/cart" routerLinkActive="active" class="navbar__cart" (click)="menuOpen=false">
-          Cart
-          @if ((cartCount$ | async)! > 0) {
-            <span class="cart-badge">{{ cartCount$ | async }}</span>
-          }
-        </a>
+        <a routerLink="/"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{exact:true}"
+           (click)="menuOpen=false">Home</a>
+      </li>
+      <li>
+        <a routerLink="/shop"
+           routerLinkActive="active"
+           (click)="menuOpen=false">Shop</a>
       </li>
     </ul>
+
+    <!-- CENTRE: logo -->
+    <a routerLink="/" class="navbar__logo">
+      <span class="navbar__logo-text">African House</span>
+    </a>
+
+    <!-- RIGHT: icon links + burger -->
+    <div class="navbar__right">
+
+      <!-- Desktop icon links -->
+      <ul class="navbar__icons" [class.open]="menuOpen">
+
+        <!-- Track Order — location-pin SVG -->
+        <li>
+          <a routerLink="/track"
+             routerLinkActive="active"
+             class="navbar__icon-link"
+             (click)="menuOpen=false"
+             aria-label="Track Order">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </a>
+        </li>
+
+        <!-- Cart — bag SVG -->
+        <li>
+          <a routerLink="/cart"
+             routerLinkActive="active"
+             class="navbar__cart navbar__icon-link"
+             (click)="menuOpen=false"
+             aria-label="Cart">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+            @if ((cartCount$ | async)! > 0) {
+              <span class="cart-badge">{{ cartCount$ | async }}</span>
+            }
+          </a>
+        </li>
+
+      </ul>
+
+      <!-- Burger (mobile only) -->
+      <button
+        class="navbar__burger"
+        (click)="menuOpen = !menuOpen"
+        [class.is-open]="menuOpen"
+        aria-label="Toggle menu"
+        [attr.aria-expanded]="menuOpen">
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+      </button>
+
+    </div>
+
   </div>
 </nav>
+
+<!-- Mobile slide-down menu -->
+<div class="navbar__mobile-menu" [class.open]="menuOpen">
+  <ul>
+    <li><a routerLink="/"    routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="menuOpen=false">Home</a></li>
+    <li><a routerLink="/shop"  routerLinkActive="active" (click)="menuOpen=false">Shop</a></li>
+    <li><a routerLink="/track" routerLinkActive="active" (click)="menuOpen=false">Track Order</a></li>
+    <li><a routerLink="/cart"  routerLinkActive="active" (click)="menuOpen=false">Cart
+      @if ((cartCount$ | async)! > 0) {
+        <span class="cart-badge cart-badge--inline">{{ cartCount$ | async }}</span>
+      }
+    </a></li>
+  </ul>
+</div>
+
+<!-- Mobile backdrop -->
+@if (menuOpen) {
+  <div class="navbar__backdrop" (click)="menuOpen=false" aria-hidden="true"></div>
+}

@@ -1,6 +1,5 @@
 <div class="tracking">
   <div class="container">
-
     <!-- HEADER -->
     <div class="tracking__header">
       <h1>Track Your Order</h1>
@@ -16,7 +15,7 @@
         (keyup.enter)="search()"
       />
       <button class="btn-primary" (click)="search()" [disabled]="loading">
-        {{ loading ? 'Searching...' : 'Track Order' }}
+        {{ loading ? "Searching..." : "Track Order" }}
       </button>
     </div>
 
@@ -24,14 +23,15 @@
     @if (notFound) {
       <div class="tracking__not-found">
         <p>No order found with that ID. Please check and try again.</p>
-        <p>Need help? Call us on <a href="tel:+233240070628">0240 070 628</a></p>
+        <p>
+          Need help? Call us on <a href="tel:+233240070628">0240 070 628</a>
+        </p>
       </div>
     }
 
     <!-- ORDER FOUND -->
     @if (order) {
       <div class="tracking__result">
-
         <!-- ORDER INFO -->
         <div class="tracking__info">
           <div class="tracking__info-row">
@@ -64,9 +64,11 @@
         <!-- STEPPER -->
         <div class="stepper">
           @for (step of steps; track step.value) {
-            <div class="stepper__step"
+            <div
+              class="stepper__step"
               [class.done]="isStepDone(order.status, step.value)"
-              [class.active]="isStepActive(order.status, step.value)">
+              [class.active]="isStepActive(order.status, step.value)"
+            >
               <div class="stepper__icon-wrap">
                 <span class="stepper__icon">{{ step.icon }}</span>
               </div>
@@ -75,7 +77,6 @@
           }
         </div>
 
-        <!-- ITEMS -->
         <div class="tracking__items">
           <h3>Items Ordered</h3>
           @for (item of order.items; track item.fabric_id) {
@@ -86,16 +87,15 @@
           }
         </div>
 
-        <!-- CONTACT -->
         <div class="tracking__contact">
           <p>Questions about your order?</p>
-          <a href="tel:+233240070628" class="tracking__phone">📞 0240 070 628</a>
+          <a href="tel:+233240070628" class="tracking__phone"
+            >📞 0240 070 628</a
+          >
         </div>
 
         <a routerLink="/shop" class="tracking__continue">Continue Shopping →</a>
-
       </div>
     }
-
   </div>
 </div>

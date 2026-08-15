@@ -1,13 +1,18 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SupabaseService } from '../../../core/services/supabase.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { getYardRules } from '../../../core/models/fabric';
+import {
+  CATEGORY_FILTER_CONFIG,
+  getSubcategoriesForCategory,
+  SubcategoryOption,
+  MainCategory,
+} from '../../../core/models/filter-config';
 
 @Component({
   selector: 'app-fabrics',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, RouterLinkActive, ReactiveFormsModule],
   templateUrl: './fabrics.component.html',
   styleUrl: './fabrics.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -18,13 +23,14 @@ export class FabricsComponent implements OnInit {
   loading = true;
   saving = false;
   showForm = false;
+  menuOpen = false;
   editingId: number | null = null;
   uploadFile: File | null = null;
   error = '';
 
   categories = ['everyday', 'funeral', 'kente'];
   materials = ['gtp', 'holland', 'printex', 'soso', 'kente', 'small-material'];
-  colourPairings = ['multicolour', 'all-black', 'red-black', 'white-black', 'custom'];
+  subcategoryOptions: SubcategoryOption[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -36,11 +42,25 @@ export class FabricsComponent implements OnInit {
       name: ['', Validators.required],
       description: ['', Validators.required],
       category: ['everyday', Validators.required],
-      colour_pairing: ['multicolour', Validators.required],
+      subcategory: ['', Validators.required],
       material: ['gtp', Validators.required],
       price_per_yard: [0, [Validators.required, Validators.min(1)]],
-      in_stock: [true]
+      min_yards: [4, [Validators.required, Validators.min(1)]],
+      available_yards: [0, [Validators.required, Validators.min(0)]],
+      in_stock: [true],
     });
+
+    this.updateSubcategoryOptions('everyday');
+
+    this.form.get('category')!.valueChanges.subscribe((cat: MainCategory) => {
+      this.form.get('subcategory')!.setValue('');
+      this.updateSubcategoryOptions(cat);
+      this.cdr.markForCheck();
+    });
+  }
+
+  private updateSubcategoryOptions(category: MainCategory): void {
+    this.subcategoryOptions = getSubcategoriesForCategory(category);
   }
 
   async ngOnInit(): Promise<void> {
@@ -48,14 +68,18 @@ export class FabricsComponent implements OnInit {
   }
 
   async loadFabrics(): Promise<void> {
-    const { data } = await this.supabase.client.from('fabrics').select('*').order('created_at', { ascending: false });
+    const { data } = await this.supabase.client
+      .from('fabrics')
+      .select('*')
+      .order('created_at', { ascending: false });
     this.fabrics = data ?? [];
     this.loading = false;
     this.cdr.markForCheck();
   }
 
-  onFileChange(event: any): void {
-    this.uploadFile = event.target.files[0] ?? null;
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.uploadFile = input.files?.[0] ?? null;
   }
 
   async onSubmit(): Promise<void> {
@@ -65,7 +89,6 @@ export class FabricsComponent implements OnInit {
     this.cdr.markForCheck();
 
     const values = this.form.value;
-    const rules = getYardRules(values.material as any);
     let imageUrl = '';
 
     if (this.uploadFile) {
@@ -84,24 +107,34 @@ export class FabricsComponent implements OnInit {
       imageUrl = data.publicUrl;
     }
 
-    const payload: any = {
+    const minYards = Number(values.min_yards);
+    const availableYards = Number(values.available_yards);
+    const isAvailable = availableYards >= minYards && minYards > 0;
+
+    const payload: Record<string, unknown> = {
       name: values.name,
       description: values.description,
       category: values.category,
-      colour_pairing: values.colour_pairing,
+      subcategory: values.subcategory,
       material: values.material,
       price_per_yard: values.price_per_yard,
-      in_stock: values.in_stock,
-      min_yard: rules.minYards,
-      yard_step: rules.yardStep,
-      ...(imageUrl && { image_url: imageUrl })
+      in_stock: values.in_stock && isAvailable,
+      min_yard: minYards,
+      yard_step: minYards,
+      available_yards: availableYards,
+      ...(imageUrl && { image_url: imageUrl }),
     };
 
     if (this.editingId) {
-      const { error: updateError } = await this.supabase.client.from('fabrics').update(payload).eq('id', this.editingId);
+      const { error: updateError } = await this.supabase.client
+        .from('fabrics')
+        .update(payload)
+        .eq('id', this.editingId);
       if (updateError) this.error = updateError.message;
     } else {
-      const { error: insertError } = await this.supabase.client.from('fabrics').insert(payload);
+      const { error: insertError } = await this.supabase.client
+        .from('fabrics')
+        .insert(payload);
       if (insertError) this.error = insertError.message;
     }
 
@@ -110,7 +143,15 @@ export class FabricsComponent implements OnInit {
       this.showForm = false;
       this.editingId = null;
       this.uploadFile = null;
-      this.form.reset({ category: 'everyday', material: 'gtp', colour_pairing: 'multicolour', in_stock: true });
+      this.form.reset({
+        category: 'everyday',
+        subcategory: '',
+        material: 'gtp',
+        in_stock: true,
+        min_yards: 4,
+        available_yards: 0,
+      });
+      this.updateSubcategoryOptions('everyday');
       await this.loadFabrics();
     } else {
       this.saving = false;
@@ -121,14 +162,17 @@ export class FabricsComponent implements OnInit {
   editFabric(fabric: any): void {
     this.editingId = fabric.id;
     this.showForm = true;
+    this.updateSubcategoryOptions(fabric.category as MainCategory);
     this.form.patchValue({
       name: fabric.name,
       description: fabric.description,
       category: fabric.category,
-      colour_pairing: fabric.colour_pairing,
+      subcategory: fabric.subcategory ?? '',
       material: fabric.material,
       price_per_yard: fabric.price_per_yard,
-      in_stock: fabric.in_stock
+      in_stock: fabric.in_stock,
+      min_yards: fabric.min_yard ?? 4,
+      available_yards: fabric.available_yards ?? 0,
     });
     this.cdr.markForCheck();
   }
@@ -142,7 +186,16 @@ export class FabricsComponent implements OnInit {
   cancelForm(): void {
     this.showForm = false;
     this.editingId = null;
-    this.form.reset({ category: 'everyday', material: 'gtp', colour_pairing: 'multicolour', in_stock: true });
+    this.uploadFile = null;
+    this.form.reset({
+      category: 'everyday',
+      subcategory: '',
+      material: 'gtp',
+      in_stock: true,
+      min_yards: 4,
+      available_yards: 0,
+    });
+    this.updateSubcategoryOptions('everyday');
   }
 
   logout(): void { this.auth.logout(); }

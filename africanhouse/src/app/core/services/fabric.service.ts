@@ -47,18 +47,21 @@ export class FabricService {
   private mapRow(row: any): Fabric {
     const material = row.material as Fabric['material'];
     const bulkMaterial = ['gtp', 'holland', 'printex'].includes(material);
+    const minYards = row.min_yard ? Number(row.min_yard) : bulkMaterial ? 6 : 2;
+    const availableYards = row.available_yards != null ? Number(row.available_yards) : 0;
     return {
       id: String(row.id),
       name: row.name,
       description: row.description,
       category: row.category,
-      colourPairing: row.colour_pairing,
+      colourPairing: row.colour_pairing ?? '',
       material,
+      subcategory: row.subcategory ?? '',
       pricePerYard: Number(row.price_per_yard),
       imageUrl: row.image_url,
       inStock: row.in_stock,
-      minYards: row.min_yard ? Number(row.min_yard) : bulkMaterial ? 6 : 2,
-      yardStep: row.yard_step ? Number(row.yard_step) : bulkMaterial ? 6 : 2
+      minYards,
+      availableYards,
     };
   }
 }

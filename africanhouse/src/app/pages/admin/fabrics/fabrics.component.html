@@ -1,109 +1,419 @@
-<div class="admin">
+<div class="admin" [class.menu-open]="menuOpen">
   <aside class="admin__sidebar">
-    <h2>African House</h2>
-    <p>Admin Panel</p>
-    <nav>
-      <a routerLink="/admin/dashboard">📊 Dashboard</a>
-      <a routerLink="/admin/fabrics">🧵 Fabrics</a>
-      <a routerLink="/admin/orders">📦 Orders</a>
+    <div class="admin__sidebar-brand">
+      <span class="admin__sidebar-logo">African House</span>
+      <span class="admin__sidebar-label">Admin Panel</span>
+    </div>
+    <nav class="admin__nav">
+      <a
+        routerLink="/admin/dashboard"
+        routerLinkActive="active"
+        class="admin__nav-link"
+      >
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+        </svg>
+        Dashboard
+      </a>
+      <a
+        routerLink="/admin/fabrics"
+        routerLinkActive="active"
+        class="admin__nav-link"
+      >
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"
+          />
+        </svg>
+        Fabrics
+      </a>
+      <a
+        routerLink="/admin/orders"
+        routerLinkActive="active"
+        class="admin__nav-link"
+      >
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <path d="M16 10a4 4 0 01-8 0" />
+        </svg>
+        Orders
+      </a>
     </nav>
-    <button (click)="logout()" class="admin__logout">Sign Out</button>
+    <div class="admin__sidebar-footer">
+      <a routerLink="/" class="admin__view-site">
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+          <polyline points="15 3 21 3 21 9" />
+          <line x1="10" y1="14" x2="21" y2="3" />
+        </svg>
+        View Site
+      </a>
+      <button (click)="logout()" class="admin__logout">
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        Sign Out
+      </button>
+    </div>
   </aside>
+
+  <div class="admin__mobile-topbar">
+    <span class="admin__mobile-logo">African House</span>
+    <button
+      class="admin__mobile-burger"
+      [class.is-open]="menuOpen"
+      (click)="menuOpen = !menuOpen"
+      aria-label="Toggle menu"
+      [attr.aria-expanded]="menuOpen"
+    >
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="admin__mobile-menu" [class.open]="menuOpen">
+    <div class="admin__sidebar-brand">
+      <span class="admin__sidebar-logo">African House</span>
+      <span class="admin__sidebar-label">Admin Panel</span>
+    </div>
+    <nav class="admin__nav">
+      <a
+        routerLink="/admin/dashboard"
+        routerLinkActive="active"
+        class="admin__nav-link"
+        (click)="menuOpen = false"
+      >
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+        </svg>
+        Dashboard
+      </a>
+      <a
+        routerLink="/admin/fabrics"
+        routerLinkActive="active"
+        class="admin__nav-link"
+        (click)="menuOpen = false"
+      >
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"
+          />
+        </svg>
+        Fabrics
+      </a>
+      <a
+        routerLink="/admin/orders"
+        routerLinkActive="active"
+        class="admin__nav-link"
+        (click)="menuOpen = false"
+      >
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <path d="M16 10a4 4 0 01-8 0" />
+        </svg>
+        Orders
+      </a>
+    </nav>
+    <div class="admin__sidebar-footer">
+      <a routerLink="/" class="admin__view-site" (click)="menuOpen = false">
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+          <polyline points="15 3 21 3 21 9" />
+          <line x1="10" y1="14" x2="21" y2="3" />
+        </svg>
+        View Site
+      </a>
+      <button (click)="logout()" class="admin__logout">
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        Sign Out
+      </button>
+    </div>
+  </div>
+
+  @if (menuOpen) {
+    <div
+      class="admin__overlay"
+      (click)="menuOpen = false"
+      aria-hidden="true"
+    ></div>
+  }
 
   <main class="admin__main">
     <div class="admin__top">
-      <h1>Fabrics</h1>
-      <button class="btn-primary" (click)="showForm = true">+ Add Fabric</button>
+      <div>
+        <span class="admin__page-eyebrow">Inventory</span>
+        <h1 class="admin__page-title">Fabrics</h1>
+      </div>
+      <button class="btn-primary" (click)="showForm = !showForm">
+        {{ showForm ? "Close Form" : "+ Add Fabric" }}
+      </button>
     </div>
 
-    <!-- FORM -->
     @if (showForm) {
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="fabric-form">
-        <h2>{{ editingId ? 'Edit Fabric' : 'Add New Fabric' }}</h2>
+        <h2>{{ editingId ? "Edit Fabric" : "Add New Fabric" }}</h2>
 
         <div class="form-grid">
           <div class="field">
-            <label>Name</label>
-            <input type="text" formControlName="name" placeholder="e.g. GTP Classic" />
+            <label for="fab-name">Name</label>
+            <input
+              id="fab-name"
+              type="text"
+              formControlName="name"
+              placeholder="e.g. GTP Classic"
+            />
           </div>
           <div class="field">
-            <label>Category</label>
-            <select formControlName="category">
+            <label for="fab-category">Category</label>
+            <select id="fab-category" formControlName="category">
               @for (cat of categories; track cat) {
                 <option [value]="cat">{{ cat }}</option>
               }
             </select>
           </div>
           <div class="field">
-            <label>Material</label>
-            <select formControlName="material">
+            <label for="fab-material">Material</label>
+            <select id="fab-material" formControlName="material">
               @for (mat of materials; track mat) {
                 <option [value]="mat">{{ mat }}</option>
               }
             </select>
           </div>
           <div class="field">
-            <label>Colour Pairing</label>
-            <select formControlName="colour_pairing">
-              @for (cp of colourPairings; track cp) {
-                <option [value]="cp">{{ cp }}</option>
+            <label for="fab-subcategory">Subcategory</label>
+            <select id="fab-subcategory" formControlName="subcategory">
+              <option value="" disabled>Select subcategory</option>
+              @for (sub of subcategoryOptions; track sub.value) {
+                <option [value]="sub.value">{{ sub.label }}</option>
               }
             </select>
           </div>
           <div class="field">
-            <label>Price per Yard (GH₵)</label>
-            <input type="number" formControlName="price_per_yard" />
+            <label for="fab-price">Price per Yard (GH₵)</label>
+            <input
+              id="fab-price"
+              type="number"
+              formControlName="price_per_yard"
+            />
+          </div>
+          <div class="field">
+            <label for="fab-min-yards">Minimum Yards</label>
+            <input
+              id="fab-min-yards"
+              type="number"
+              formControlName="min_yards"
+              min="1"
+            />
+            <p class="field__hint">Smallest quantity a customer can purchase.</p>
+          </div>
+          <div class="field">
+            <label for="fab-available-yards">Available Yards</label>
+            <input
+              id="fab-available-yards"
+              type="number"
+              formControlName="available_yards"
+              min="0"
+            />
+            <p class="field__hint">Current stock. Product shows as sold out when this falls below the minimum.</p>
           </div>
           <div class="field field--check">
             <label>
               <input type="checkbox" formControlName="in_stock" />
-              In Stock
+              In Stock (manual override)
             </label>
           </div>
         </div>
 
         <div class="field">
-          <label>Description</label>
-          <textarea formControlName="description" rows="3"></textarea>
+          <label for="fab-desc">Description</label>
+          <textarea
+            id="fab-desc"
+            formControlName="description"
+            rows="3"
+            placeholder="Brief description of the fabric..."
+          ></textarea>
         </div>
 
         <div class="field">
-          <label>Fabric Image</label>
-          <input type="file" accept="image/*" (change)="onFileChange($event)" />
-          <p class="field__hint">Min/yard step is set automatically based on material</p>
+          <label for="fab-image">Fabric Image</label>
+          <input
+            id="fab-image"
+            type="file"
+            accept="image/*"
+            (change)="onFileChange($event)"
+          />
         </div>
 
         @if (error) {
-          <p class="form-error">{{ error }}</p>
+          <p class="form-error" role="alert">{{ error }}</p>
         }
 
         <div class="form-actions">
           <button type="submit" class="btn-primary" [disabled]="saving">
-            {{ saving ? 'Saving...' : editingId ? 'Update Fabric' : 'Add Fabric' }}
+            {{
+              saving ? "Saving…" : editingId ? "Update Fabric" : "Add Fabric"
+            }}
           </button>
-          <button type="button" class="btn-outline" (click)="cancelForm()">Cancel</button>
+          <button type="button" class="btn-outline" (click)="cancelForm()">
+            Cancel
+          </button>
         </div>
       </form>
     }
 
-    <!-- FABRIC LIST -->
     @if (loading) {
-      <p class="admin__loading">Loading fabrics...</p>
+      <p class="admin__loading">Loading fabrics…</p>
+    } @else if (fabrics.length === 0) {
+      <p class="admin__empty">No fabrics yet. Add your first fabric above.</p>
     } @else {
       <div class="fabric-list">
+        <div class="fabric-list-header">
+          <span></span>
+          <span>Fabric</span>
+          <span>Actions</span>
+        </div>
         @for (fabric of fabrics; track fabric.id) {
           <div class="fabric-row">
-            <img [src]="fabric.image_url" [alt]="fabric.name" class="fabric-row__img" />
+            <img
+              [src]="fabric.image_url"
+              [alt]="fabric.name"
+              class="fabric-row__img"
+            />
             <div class="fabric-row__info">
               <p class="fabric-row__name">{{ fabric.name }}</p>
-              <p class="fabric-row__meta">{{ fabric.material }} · {{ fabric.category }} · GH₵ {{ fabric.price_per_yard }}/yd</p>
+              <p class="fabric-row__meta">
+                {{ fabric.material }} &middot; {{ fabric.category }} &middot;
+                GH₵ {{ fabric.price_per_yard }}/yd &middot;
+                Min: {{ fabric.min_yard }} yds &middot;
+                Available: {{ fabric.available_yards ?? 0 }} yds
+              </p>
               <span class="fabric-row__stock" [class.out]="!fabric.in_stock">
-                {{ fabric.in_stock ? 'In Stock' : 'Out of Stock' }}
+                {{ fabric.in_stock ? "In Stock" : "Out of Stock" }}
               </span>
             </div>
             <div class="fabric-row__actions">
-              <button class="btn-outline" (click)="editFabric(fabric)">Edit</button>
-              <button class="fabric-row__delete" (click)="deleteFabric(fabric.id)">Delete</button>
+              <button class="btn-outline" (click)="editFabric(fabric)">
+                Edit
+              </button>
+              <button
+                class="fabric-row__delete"
+                (click)="deleteFabric(fabric.id)"
+              >
+                Delete
+              </button>
             </div>
           </div>
         }

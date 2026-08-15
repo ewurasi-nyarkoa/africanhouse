@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil, switchMap } from 'rxjs/operators';
 import { FabricService } from '../../core/services/fabric.service';
 import { CartService } from '../../core/services/cart.service';
-import { Fabric } from '../../core/models/fabric';
+import { Fabric, isAvailableForPurchase } from '../../core/models/fabric';
 import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
@@ -16,9 +16,28 @@ import { Title, Meta } from '@angular/platform-browser';
 })
 export class FabricDetailComponent implements OnInit, OnDestroy {
   fabric: Fabric | undefined;
-  yards = 2;
+  yards = 0;
   added = false;
   private destroy$ = new Subject<void>();
+
+  get isSoldOut(): boolean {
+    if (!this.fabric) return true;
+    return !this.fabric.inStock || !isAvailableForPurchase(this.fabric.minYards, this.fabric.availableYards);
+  }
+
+  get canIncrement(): boolean {
+    if (!this.fabric) return false;
+    return this.yards + this.fabric.minYards <= this.fabric.availableYards;
+  }
+
+  get canDecrement(): boolean {
+    if (!this.fabric) return false;
+    return this.yards > this.fabric.minYards;
+  }
+
+  get subtotal(): number {
+    return this.fabric ? this.fabric.pricePerYard * this.yards : 0;
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -38,28 +57,29 @@ export class FabricDetailComponent implements OnInit, OnDestroy {
       if (fabric) {
         this.yards = fabric.minYards;
         this.title.setTitle(`${fabric.name} — African House`);
-        this.meta.updateTag({ name: 'description', content: `${fabric.description} Buy ${fabric.material} fabric by the yard at African House, Nsawam Ghana.` });
+        this.meta.updateTag({
+          name: 'description',
+          content: `${fabric.description} Buy ${fabric.material} fabric by the yard at African House, Nsawam Ghana.`
+        });
       }
       this.cdr.markForCheck();
     });
   }
 
   increment(): void {
-    if (this.fabric) this.yards += this.fabric.yardStep;
-  }
-
-  decrement(): void {
-    if (this.fabric && this.yards > this.fabric.minYards) {
-      this.yards -= this.fabric.yardStep;
+    if (this.canIncrement) {
+      this.yards += this.fabric!.minYards;
     }
   }
 
-  get subtotal(): number {
-    return this.fabric ? this.fabric.pricePerYard * this.yards : 0;
+  decrement(): void {
+    if (this.canDecrement) {
+      this.yards -= this.fabric!.minYards;
+    }
   }
 
   addToCart(): void {
-    if (!this.fabric) return;
+    if (!this.fabric || this.isSoldOut) return;
     this.cartService.addToCart(this.fabric, this.yards);
     this.added = true;
     setTimeout(() => { this.added = false; this.cdr.markForCheck(); }, 2000);

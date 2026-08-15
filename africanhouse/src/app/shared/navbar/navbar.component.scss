@@ -1,89 +1,299 @@
+/* ════════════════════════════════════════════════
+   NAVBAR — centred logo, flanking link groups
+════════════════════════════════════════════════ */
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 100;
-  background: var(--cream);
-  border-bottom: 1px solid var(--light-grey);
-  height: 70px;
+  z-index: 200;
+  background: var(--ivory);
+  border-bottom: 1px solid transparent;
+  height: var(--nav-height);
+  transition: border-color var(--ease), box-shadow var(--ease);
 
+  &.scrolled {
+    border-bottom-color: var(--light-grey);
+    box-shadow: 0 2px 16px rgba(43, 43, 43, 0.06);
+  }
+
+  /* Three-column inner: left | centre | right */
   &__inner {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
     height: 100%;
   }
 
+  /* ── Centre logo ── */
   &__logo {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    grid-column: 2;
   }
 
-  &__links {
-    display: flex;
+  &__logo-text {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: 0.02em;
+    color: var(--charcoal);
+    white-space: nowrap;
+    transition: color var(--ease);
+
+    .navbar__logo:hover & { color: var(--burgundy); }
+  }
+
+  /* ── Left text links ── */
+  &__left {
     list-style: none;
-    gap: 2rem;
+    display: flex;
     align-items: center;
+    gap: 2.25rem;
+    grid-column: 1;
+  }
 
-    a {
-      font-size: 0.875rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--grey);
-      transition: color 0.2s;
+  /* ── Right: icon links + burger wrapper ── */
+  &__right {
+    grid-column: 3;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.5rem;
+  }
 
-      &:hover, &.active { color: var(--black); }
+  /* Icon link list */
+  &__icons {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  /* Shared link style for both left text links and icon links */
+  &__left a,
+  &__icons a {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--grey);
+    position: relative;
+    padding-bottom: 3px;
+    transition: color var(--ease);
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--burgundy);
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform var(--ease);
+    }
+
+    &:hover {
+      color: var(--charcoal);
+      &::after { transform: scaleX(1); }
+    }
+
+    &.active {
+      color: var(--charcoal);
+      &::after { transform: scaleX(1); }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 4px;
     }
   }
 
-  &__cart { position: relative; }
+  /* Icon links: SVG-only, no underline treatment */
+  &__icon-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--grey);
+    transition: color var(--ease);
+    padding-bottom: 0 !important;  /* override the text-link padding */
 
+    /* No text-style underline on icon links */
+    &::after { display: none !important; }
+
+    &:hover { color: var(--charcoal); }
+
+    &.active { color: var(--charcoal); }
+
+    svg { display: block; transition: color var(--ease); }
+  }
+
+  /* ── Cart: relative for badge positioning ── */
+  &__cart {
+    position: relative;
+  }
+
+  /* ── Burger (hidden on desktop) ── */
   &__burger {
     display: none;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
     gap: 5px;
-    span {
-      display: block;
-      width: 24px;
-      height: 2px;
-      background: var(--black);
-    }
+    padding: 4px;
+    transition: opacity var(--ease);
+
+    &:hover { opacity: 0.7; }
+    &:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  }
+
+  /* ── Mobile menu (separate element below nav) ── */
+  &__mobile-menu {
+    display: none;
+  }
+
+  /* ── Backdrop ── */
+  &__backdrop {
+    display: none;
   }
 }
 
+/* ── Burger lines ── */
+.burger-line {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: var(--charcoal);
+  transform-origin: center;
+  transition: transform var(--ease), opacity var(--ease);
+}
+
+.navbar__burger.is-open {
+  .burger-line:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .burger-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .burger-line:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+}
+
+/* ── Cart badge ── */
 .cart-badge {
   position: absolute;
-  top: -8px;
-  right: -12px;
-  background: var(--red);
+  top: -7px;
+  right: -9px;
+  background: var(--burgundy);
   color: var(--white);
-  font-size: 0.65rem;
-  width: 18px;
-  height: 18px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 1;
+  letter-spacing: 0;
+
+  /* Inline variant used in mobile menu */
+  &--inline {
+    position: static;
+    display: inline-flex;
+    vertical-align: middle;
+    margin-left: 0.4rem;
+  }
 }
 
+/* ════════════════════════════════
+   MOBILE (≤ 768px)
+════════════════════════════════ */
 @media (max-width: 768px) {
+
   .navbar {
+    /* On mobile: logo left, burger right — simpler two-col */
+    &__inner {
+      grid-template-columns: 1fr auto;
+    }
+
+    &__logo {
+      grid-column: 1;
+      justify-content: flex-start;
+    }
+
+    &__right {
+      grid-column: 2;
+      gap: 0;
+    }
+
+    /* Hide desktop link groups */
+    &__left,
+    &__icons {
+      display: none;
+    }
+
+    /* Show burger */
     &__burger { display: flex; }
 
-    &__links {
-      display: none;
-      position: absolute;
-      top: 70px;
-      left: 0;
-      right: 0;
-      background: var(--cream);
-      flex-direction: column;
-      padding: 1.5rem;
-      border-bottom: 1px solid var(--light-grey);
-      gap: 1.5rem;
+    /* Backdrop */
+    &__backdrop {
+      display: block;
+      position: fixed;
+      inset: 0;
+      top: var(--nav-height);
+      background: rgba(43, 43, 43, 0.3);
+      z-index: 198;
+    }
+  }
 
-      &.open { display: flex; }
+  /* Mobile slide-down menu */
+  .navbar__mobile-menu {
+    display: block;
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    background: var(--ivory);
+    border-bottom: 1px solid var(--light-grey);
+    box-shadow: 0 8px 24px rgba(43, 43, 43, 0.1);
+    transform: translateY(-105%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 199;
+
+    &.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    ul {
+      list-style: none;
+      padding: 1.5rem var(--space-md) 2rem;
+    }
+
+    li {
+      border-bottom: 1px solid var(--light-grey);
+      &:last-child { border-bottom: none; }
+    }
+
+    a {
+      display: flex;
+      align-items: center;
+      padding: 1rem 0;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      transition: color var(--ease);
+
+      &.active { color: var(--burgundy); }
+      &:hover  { color: var(--burgundy); }
+      &:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
     }
   }
 }

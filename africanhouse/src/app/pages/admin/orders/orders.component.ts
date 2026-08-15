@@ -1,14 +1,20 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { DatePipe, UpperCasePipe } from '@angular/common';
 import { SupabaseService } from '../../../core/services/supabase.service';
 import { AuthService } from '../../../core/services/auth.service';
 
-export type OrderStatus = 'pending' | 'payment_confirmed' | 'packaging' | 'out_for_delivery' | 'delivered';
+export type OrderStatus =
+  | 'pending'
+  | 'payment_confirmed'
+  | 'packaging'
+  | 'ready_for_delivery'
+  | 'out_for_delivery'
+  | 'delivered';
 
 @Component({
   selector: 'app-orders',
-  imports: [RouterLink, DatePipe, UpperCasePipe],
+  imports: [RouterLink, RouterLinkActive, DatePipe, UpperCasePipe],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -16,16 +22,25 @@ export type OrderStatus = 'pending' | 'payment_confirmed' | 'packaging' | 'out_f
 export class OrdersComponent implements OnInit {
   orders: any[] = [];
   loading = true;
+  menuOpen = false;
 
   statuses: { value: OrderStatus; label: string; icon: string }[] = [
-    { value: 'pending', label: 'Pending', icon: '⏳' },
-    { value: 'payment_confirmed', label: 'Payment Confirmed', icon: '✅' },
-    { value: 'packaging', label: 'Packaging', icon: '📦' },
-    { value: 'out_for_delivery', label: 'Out for Delivery', icon: '🚚' },
-    { value: 'delivered', label: 'Delivered', icon: '🎉' },
+    { value: 'pending',            label: 'Order Placed',        icon: '1' },
+    { value: 'payment_confirmed',  label: 'Payment Confirmed',   icon: '2' },
+    { value: 'packaging',          label: 'Order Processing',    icon: '3' },
+    { value: 'ready_for_delivery', label: 'Ready for Delivery',  icon: '4' },
+    { value: 'out_for_delivery',   label: 'Out for Delivery',    icon: '5' },
+    { value: 'delivered',          label: 'Delivered',           icon: '6' },
   ];
 
-  private statusOrder: OrderStatus[] = ['pending', 'payment_confirmed', 'packaging', 'out_for_delivery', 'delivered'];
+  private statusOrder: OrderStatus[] = [
+    'pending',
+    'payment_confirmed',
+    'packaging',
+    'ready_for_delivery',
+    'out_for_delivery',
+    'delivered',
+  ];
 
   constructor(
     private supabase: SupabaseService,
@@ -54,4 +69,8 @@ export class OrdersComponent implements OnInit {
   }
 
   logout(): void { this.auth.logout(); }
+
+  getStatusLabel(status: OrderStatus): string {
+    return this.statuses.find(s => s.value === status)?.label ?? status;
+  }
 }

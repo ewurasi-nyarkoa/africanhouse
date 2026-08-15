@@ -1,18 +1,22 @@
 @if (fabric) {
   <div class="detail">
 
-    <!-- BREADCRUMB -->
-    <div class="container detail__breadcrumb">
+    <nav class="container detail__breadcrumb" aria-label="Breadcrumb">
       <a routerLink="/shop">Shop</a>
-      <span>/</span>
+      <span class="detail__breadcrumb-sep" aria-hidden="true">/</span>
       <span>{{ fabric.name }}</span>
-    </div>
+    </nav>
 
     <div class="container detail__body">
 
-      <!-- IMAGE -->
-      <div class="detail__image-wrap">
-        <img [src]="fabric.imageUrl" [alt]="fabric.name" class="detail__image" />
+      <div class="detail__image-col">
+        <div class="detail__image-wrap">
+          <img [src]="fabric.imageUrl" [alt]="fabric.name" class="detail__image" />
+
+          <div class="detail__image-corner" aria-hidden="true"></div>
+        </div>
+
+        <!-- Badges below image -->
         <div class="detail__badges">
           <span class="badge badge--material">{{ fabric.material }}</span>
           <span class="badge badge--category">{{ fabric.category }}</span>
@@ -22,60 +26,106 @@
         </div>
       </div>
 
-      <!-- INFO -->
+      <!-- INFO COLUMN -->
       <div class="detail__info">
+
+        <!-- Category eyebrow -->
+        <span class="detail__eyebrow">{{ fabric.category }}</span>
+
         <h1 class="detail__name">{{ fabric.name }}</h1>
-        <p class="detail__colour">{{ fabric.colourPairing }}</p>
-        <p class="detail__price">GH₵ {{ fabric.pricePerYard }} <span>per yard</span></p>
+        <p class="detail__colour">{{ fabric.subcategory || fabric.colourPairing }}</p>
+        <p class="detail__price">
+          GH₵ {{ fabric.pricePerYard }}
+          <span class="detail__price-unit">per yard</span>
+        </p>
+
         <p class="detail__desc">{{ fabric.description }}</p>
 
-        <!-- NOTICE -->
+        <!-- Unsewn notice -->
         <div class="detail__notice">
-          <span>✦</span>
-          <p>This fabric is sold <strong>unsewn by the yard</strong>. Take it to your tailor and have it made exactly how you want it.</p>
+          <span class="detail__notice-rule" aria-hidden="true"></span>
+          <p>
+            This fabric is sold <strong>unsewn by the yard</strong>.
+            Take it to your tailor and have it made exactly how you want it.
+          </p>
         </div>
 
-        @if (fabric.inStock) {
+        @if (!isSoldOut) {
+
           <!-- YARD SELECTOR -->
           <div class="detail__selector">
-            <label>How many yards?</label>
-            <p class="detail__min-note">Minimum {{ fabric.minYards }} yds · sold in {{ fabric.yardStep }}-yard lots</p>
+            <label class="detail__selector-label">How many yards?</label>
+            <p class="detail__min-note">
+              Minimum {{ fabric.minYards }} yds &middot; {{ fabric.availableYards }} yds available
+            </p>
             <div class="yard-selector">
-              <button (click)="decrement()" [disabled]="yards <= fabric.minYards" aria-label="Decrease">−</button>
+              <button (click)="decrement()" [disabled]="!canDecrement" aria-label="Decrease yards">−</button>
               <span>{{ yards }} yd</span>
-              <button (click)="increment()" aria-label="Increase">+</button>
+              <button (click)="increment()" [disabled]="!canIncrement" aria-label="Increase yards">+</button>
             </div>
-            <p class="detail__subtotal">Total: <strong>GH₵ {{ subtotal }}</strong></p>
+            <p class="detail__subtotal">
+              Total: <strong>GH₵ {{ subtotal }}</strong>
+            </p>
           </div>
 
-          <button class="btn-primary detail__add" (click)="addToCart()">
-            {{ added ? '✓ Added to Cart' : 'Add to Cart' }}
-          </button>
+          <!-- CTAs -->
+          <div class="detail__ctas">
+            <button class="btn-primary detail__add" (click)="addToCart()">
+              {{ added ? '✓ Added to Cart' : 'Add to Cart' }}
+            </button>
+            <a routerLink="/cart" class="detail__view-cart">View Cart →</a>
+          </div>
 
-          <a routerLink="/cart" class="detail__view-cart">View Cart →</a>
         } @else {
-          <p class="detail__unavailable">This fabric is currently out of stock. Subscribe below to be notified when it's back.</p>
+          <p class="detail__unavailable">
+            This fabric is currently sold out.
+            Subscribe below to be notified when it's back.
+          </p>
         }
 
         <!-- DELIVERY INFO -->
         <div class="detail__delivery">
+
           <div class="delivery-item">
-            <span>📍</span>
-            <p>Available at our store in <strong>Nsawam, Eastern Region</strong></p>
+            <span class="delivery-item__icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <p>Available at our store in <strong>Amasaman, Greater Accra Region</strong></p>
           </div>
+
           <div class="delivery-item">
-            <span>🚚</span>
+            <span class="delivery-item__icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13" rx="1"/>
+                <path d="M16 8h4l3 3v5h-7V8z"/>
+                <circle cx="5.5" cy="18.5" r="2.5"/>
+                <circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+            </span>
             <p>Nationwide delivery available at a fee</p>
           </div>
+
           <div class="delivery-item">
-            <span>📦</span>
-            <p>Wholesale & bulk orders welcome — <a href="tel:+233240070628">call 0240 070 628</a></p>
+            <span class="delivery-item__icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+              </svg>
+            </span>
+            <p>
+              Wholesale &amp; bulk orders welcome —
+              <a href="tel:+233240070628">call 0240 070 628</a>
+            </p>
           </div>
+
         </div>
       </div>
 
     </div>
   </div>
+
 } @else {
   <div class="container detail__not-found">
     <p>Fabric not found.</p>

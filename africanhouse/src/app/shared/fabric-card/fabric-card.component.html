@@ -1,35 +1,51 @@
-<article class="fabric-card" [class.out-of-stock]="!fabric.inStock">
-  <a [routerLink]="['/fabric', fabric.id]" class="fabric-card__image-wrap">
+<article class="fabric-card" [class.out-of-stock]="isSoldOut">
+
+  <a [routerLink]="['/fabric', fabric.id]" class="fabric-card__image-wrap" tabindex="-1" aria-hidden="true">
     <img [src]="fabric.imageUrl" [alt]="fabric.name" class="fabric-card__image" />
-    <span class="fabric-card__tag">{{ fabric.colourPairing }}</span>
-    @if (!fabric.inStock) {
-      <span class="fabric-card__sold-out">Out of Stock</span>
+    <span class="fabric-card__material-tag">{{ fabric.material }}</span>
+    @if (isSoldOut) {
+      <span class="fabric-card__sold-out">Sold Out</span>
     }
   </a>
 
   <div class="fabric-card__body">
-    <div class="fabric-card__meta">
-      <span class="fabric-card__material">{{ fabric.material }}</span>
-      <span class="fabric-card__category">{{ fabric.category }}</span>
-    </div>
+    <span class="fabric-card__category">{{ fabric.category }}</span>
 
-    <a [routerLink]="['/fabric', fabric.id]">
+    <a [routerLink]="['/fabric', fabric.id]" class="fabric-card__name-link">
       <h3 class="fabric-card__name">{{ fabric.name }}</h3>
     </a>
 
-    <p class="fabric-card__price">GH₵ {{ fabric.pricePerYard }} <span>/ yard</span></p>
+    <p class="fabric-card__colour">{{ fabric.subcategory || fabric.colourPairing }}</p>
 
-    @if (fabric.inStock) {
+    <p class="fabric-card__price">
+      GH₵ {{ fabric.pricePerYard }}<span class="fabric-card__per"> / yard</span>
+    </p>
+
+    @if (!isSoldOut) {
       <div class="fabric-card__actions">
-        <p class="fabric-card__min-note">Min. {{ fabric.minYards }} yds · sold in {{ fabric.yardStep }}-yard lots</p>
+        <p class="fabric-card__min-note">
+          Min. {{ fabric.minYards }} yds &middot; {{ fabric.availableYards }} yds available
+        </p>
+
         <div class="yard-selector">
-          <button (click)="decrement()" [disabled]="yards <= fabric.minYards" aria-label="Decrease yards">−</button>
+          <button
+            (click)="decrement()"
+            [disabled]="!canDecrement"
+            aria-label="Decrease yards">−</button>
           <span>{{ yards }} yd</span>
-          <button (click)="increment()" aria-label="Increase yards">+</button>
+          <button
+            (click)="increment()"
+            [disabled]="!canIncrement"
+            aria-label="Increase yards">+</button>
         </div>
+
         <p class="fabric-card__subtotal">GH₵ {{ fabric.pricePerYard * yards }}</p>
+
         <button class="btn-primary fabric-card__add" (click)="addToCart()">Add to Cart</button>
       </div>
+    } @else {
+      <p class="fabric-card__sold-out-text">Currently unavailable</p>
     }
   </div>
+
 </article>

@@ -26,8 +26,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   orderId: number | null = null;
   private destroy$ = new Subject<void>();
 
-
-
   constructor(
     private fb: FormBuilder,
     private cartService: CartService,
@@ -54,7 +52,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     });
   }
 
-
   async onSubmit(): Promise<void> {
     if (this.form.invalid || this.items.length === 0) {
       this.form.markAllAsTouched();
@@ -66,7 +63,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
     const { fullName, phone, location, deliveryNote } = this.form.value;
 
-    // Open Paystack popup first — order only saves on success
     let paystackReference: string;
     try {
       const result = await this.paymentService.openPaystack(
@@ -80,6 +76,21 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.placing = false;
       this.cdr.markForCheck();
       return;
+    }
+
+    for (const item of this.items) {
+      const { data: rpcData, error: rpcError } = await this.supabase.client.rpc(
+        'deduct_inventory',
+        { p_fabric_id: Number(item.fabric.id), p_yards: item.yards }
+      );
+
+      if (rpcError || rpcData?.success === false) {
+        const reason = rpcData?.message ?? rpcError?.message ?? 'Inventory error';
+        this.orderError = `Unable to complete your order: ${reason}. Please call us on 0240 070 628.`;
+        this.placing = false;
+        this.cdr.markForCheck();
+        return;
+      }
     }
 
     const { data, error } = await this.supabase.client.from('orders').insert({

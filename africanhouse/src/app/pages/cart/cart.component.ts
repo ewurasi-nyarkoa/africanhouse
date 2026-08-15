@@ -34,14 +34,23 @@ export class CartComponent implements OnInit, OnDestroy {
     });
   }
 
+  canIncrement(item: CartItem): boolean {
+    return item.yards + item.fabric.minYards <= item.fabric.availableYards;
+  }
+
+  canDecrement(item: CartItem): boolean {
+    return item.yards > item.fabric.minYards;
+  }
+
   increment(item: CartItem): void {
-    this.cartService.updateYards(item.fabric.id, item.yards + item.fabric.yardStep);
+    if (this.canIncrement(item)) {
+      this.cartService.updateYards(item.fabric.id, item.yards + item.fabric.minYards);
+    }
   }
 
   decrement(item: CartItem): void {
-    const next = item.yards - item.fabric.yardStep;
-    if (next >= item.fabric.minYards) {
-      this.cartService.updateYards(item.fabric.id, next);
+    if (this.canDecrement(item)) {
+      this.cartService.updateYards(item.fabric.id, item.yards - item.fabric.minYards);
     }
   }
 

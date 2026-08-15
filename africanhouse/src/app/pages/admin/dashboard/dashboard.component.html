@@ -1,44 +1,131 @@
-<div class="admin">
+<div class="admin" [class.menu-open]="menuOpen">
+
+  <!-- ═══ DESKTOP SIDEBAR ═══ -->
   <aside class="admin__sidebar">
-    <h2>African House</h2>
-    <p>Admin Panel</p>
-    <nav>
-      <a routerLink="/admin/dashboard">📊 Dashboard</a>
-      <a routerLink="/admin/fabrics">🧵 Fabrics</a>
-      <a routerLink="/admin/orders">📦 Orders</a>
+    <div class="admin__sidebar-brand">
+      <span class="admin__sidebar-logo">African House</span>
+      <span class="admin__sidebar-label">Admin Panel</span>
+    </div>
+    <nav class="admin__nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="admin__nav-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a routerLink="/admin/fabrics" routerLinkActive="active" class="admin__nav-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+        Fabrics
+      </a>
+      <a routerLink="/admin/orders" routerLinkActive="active" class="admin__nav-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        Orders
+      </a>
     </nav>
-    <button (click)="logout()" class="admin__logout">Sign Out</button>
+    <div class="admin__sidebar-footer">
+      <a routerLink="/" class="admin__view-site">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        View Site
+      </a>
+      <button (click)="logout()" class="admin__logout">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </button>
+    </div>
   </aside>
 
-  <main class="admin__main">
-    <h1>Dashboard</h1>
+  <!-- ═══ MOBILE TOP BAR ═══ -->
+  <div class="admin__mobile-topbar">
+    <span class="admin__mobile-logo">African House</span>
+    <button class="admin__mobile-burger" [class.is-open]="menuOpen" (click)="menuOpen=!menuOpen" aria-label="Toggle menu" [attr.aria-expanded]="menuOpen">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 
+  <!-- ═══ MOBILE SLIDE-IN MENU ═══ -->
+  <div class="admin__mobile-menu" [class.open]="menuOpen">
+    <div class="admin__sidebar-brand">
+      <span class="admin__sidebar-logo">African House</span>
+      <span class="admin__sidebar-label">Admin Panel</span>
+    </div>
+    <nav class="admin__nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="admin__nav-link" (click)="menuOpen=false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a routerLink="/admin/fabrics" routerLinkActive="active" class="admin__nav-link" (click)="menuOpen=false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+        Fabrics
+      </a>
+      <a routerLink="/admin/orders" routerLinkActive="active" class="admin__nav-link" (click)="menuOpen=false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        Orders
+      </a>
+    </nav>
+    <div class="admin__sidebar-footer">
+      <a routerLink="/" class="admin__view-site" (click)="menuOpen=false">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        View Site
+      </a>
+      <button (click)="logout()" class="admin__logout">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ MOBILE OVERLAY ═══ -->
+  @if (menuOpen) {
+    <div class="admin__overlay" (click)="menuOpen=false" aria-hidden="true"></div>
+  }
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="admin__main">
+    <header class="admin__page-header">
+      <div>
+        <span class="admin__page-eyebrow">Overview</span>
+        <h1 class="admin__page-title">Dashboard</h1>
+      </div>
+    </header>
+
+    <!-- STAT CARDS -->
     <div class="stats">
       <div class="stat">
-        <span class="stat__icon">🧵</span>
+        <div class="stat__icon-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+        </div>
         <p class="stat__value">{{ stats.fabrics }}</p>
         <p class="stat__label">Total Fabrics</p>
       </div>
+
       <div class="stat">
-        <span class="stat__icon">📦</span>
+        <div class="stat__icon-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </div>
         <p class="stat__value">{{ stats.orders }}</p>
         <p class="stat__label">Total Orders</p>
       </div>
+
       <div class="stat stat--alert">
-        <span class="stat__icon">⏳</span>
+        <div class="stat__icon-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
         <p class="stat__value">{{ stats.pending }}</p>
         <p class="stat__label">Pending Orders</p>
       </div>
-      <div class="stat">
-        <span class="stat__icon">📧</span>
+
+      <div class="stat stat--accent">
+        <div class="stat__icon-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
         <p class="stat__value">{{ stats.subscribers }}</p>
         <p class="stat__label">Subscribers</p>
       </div>
     </div>
 
+    <!-- QUICK ACTIONS -->
     <div class="quick-links">
       <a routerLink="/admin/fabrics" class="btn-primary">Manage Fabrics</a>
       <a routerLink="/admin/orders" class="btn-outline">View Orders</a>
     </div>
   </main>
+
 </div>

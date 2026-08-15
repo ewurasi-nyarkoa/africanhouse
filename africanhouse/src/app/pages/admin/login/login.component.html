@@ -1,22 +1,24 @@
 <div class="login">
   <div class="login__box">
-    <h1>African House</h1>
-    <p>Admin Panel</p>
+    <span class="login__logo">African House</span>
+    <span class="login__subtitle">Admin Panel</span>
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form class="login__form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="field">
-        <label>Email</label>
-        <input type="email" formControlName="email" placeholder="admin@email.com" />
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" placeholder="admin@example.com" autocomplete="email" />
       </div>
       <div class="field">
-        <label>Password</label>
-        <input type="password" formControlName="password" placeholder="••••••••" />
+        <label for="password">Password</label>
+        <input id="password" type="password" formControlName="password" placeholder="••••••••" autocomplete="current-password" />
       </div>
+
       @if (error) {
-        <p class="login__error">{{ error }}</p>
+        <p class="login__error" role="alert">{{ error }}</p>
       }
-      <button type="submit" class="btn-primary" [disabled]="loading">
-        {{ loading ? 'Signing in...' : 'Sign In' }}
+
+      <button type="submit" class="btn-primary login__submit" [disabled]="loading">
+        {{ loading ? 'Signing in…' : 'Sign In' }}
       </button>
     </form>
   </div>

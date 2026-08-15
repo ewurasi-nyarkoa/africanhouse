@@ -1,75 +1,125 @@
-<!-- HERO -->
 <section class="hero">
+
   <div class="hero__content">
-    <p class="hero__eyebrow">Fabric House · Est. Ghana</p>
-    <h1 class="hero__title">Cloth for every<br/>moment that matters</h1>
-    <p class="hero__sub">GTP, Ankara, Kente, damask, voile and brocade — sold unsewn by the yard so your tailor can craft something entirely yours.</p>
+    <span class="hero__eyebrow">Fabric House · Est. Ghana</span>
+    <h1 class="hero__title">
+      Cloth for every<br/>moment<br/>that matters
+    </h1>
+    <p class="hero__sub">
+      GTP, Ankara, Kente, damask, voile and brocade —
+      sold unsewn by the yard so your tailor can craft
+      something entirely yours.
+    </p>
     <div class="hero__actions">
       <a routerLink="/shop" class="btn-primary">Shop Fabrics</a>
-      <a routerLink="/shop" class="btn-outline">Funeral Collection</a>
+      <a routerLink="/shop" [queryParams]="{category:'funeral'}" class="btn-outline">Funeral Collection</a>
+    </div>
+    <div class="hero__scroll-hint" aria-hidden="true">
+      <span class="hero__scroll-line"></span>
+      <span class="hero__scroll-label">Scroll</span>
     </div>
   </div>
-  <div class="hero__image-wrap">
-    <div class="hero__image-stack">
-      <img src="images/hero.png" alt="African House fabric" class="hero__img hero__img--back" />
-      <img src="images/hero2.jpg" alt="African House fabric" class="hero__img hero__img--front" />
+
+  <div class="hero__media">
+    <div class="hero__image-frame">
+      <img
+        src="images/hero.png"
+        alt="Premium African fabric — African House"
+        class="hero__img hero__img--primary"
+      />
+      <img
+        src="images/hero2.jpg"
+        alt="African House fabric collection"
+        class="hero__img hero__img--accent"
+      />
     </div>
+    <div class="hero__media-corner" aria-hidden="true"></div>
   </div>
+
 </section>
 
-<!-- VALUES -->
 <section class="values">
-  <div class="container values__grid">
-    <div class="value">
-      <span class="value__icon">◈</span>
-      <h3>Honest Quality</h3>
-      <p>GTP, Ankara, Kente, voile, damask and brocade — selected for feel, durability and true colour.</p>
-    </div>
-    <div class="value">
-      <span class="value__icon">✦</span>
-      <h3>Yours to Design</h3>
-      <p>Sold unsewn by the yard so your tailor can craft something that is entirely you.</p>
-    </div>
-    <div class="value">
-      <span class="value__icon">◉</span>
-      <h3>Right for the Occasion</h3>
-      <p>Church, work, wedding, everyday and funeral — we have the cloth for every moment.</p>
+  <div class="container values__inner">
+    <div class="values__grid">
+
+      <div class="value">
+        <span class="value__rule" aria-hidden="true"></span>
+        <h3 class="value__heading">Honest Quality</h3>
+        <p class="value__body">GTP, Ankara, Kente, voile, damask and brocade — selected for feel, durability and true colour.</p>
+      </div>
+
+      <div class="value">
+        <span class="value__rule" aria-hidden="true"></span>
+        <h3 class="value__heading">Yours to Design</h3>
+        <p class="value__body">Sold unsewn by the yard so your tailor can craft something that is entirely you.</p>
+      </div>
+
+      <div class="value">
+        <span class="value__rule" aria-hidden="true"></span>
+        <h3 class="value__heading">Right for the Occasion</h3>
+        <p class="value__body">Church, work, wedding, everyday and funeral — we have the cloth for every moment.</p>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- COLLECTIONS -->
-<section class="pairings">
+<section class="collections">
   <div class="container">
-    <h2 class="section-title">Shop by Occasion</h2>
-    <div class="pairings__grid">
-      <a routerLink="/shop" [queryParams]="{category: 'everyday'}" class="pairing pairing--everyday">
-        <span>Everyday</span>
+
+    <header class="collections__header">
+      <span class="section-eyebrow">Collections</span>
+      <h2 class="section-title">Shop by Occasion</h2>
+    </header>
+
+    <div class="collections__grid">
+
+      <a routerLink="/shop" [queryParams]="{category:'everyday'}" class="collection-tile collection-tile--everyday">
+        <div class="collection-tile__inner">
+          <span class="collection-tile__label">Everyday</span>
+          <span class="collection-tile__arrow" aria-hidden="true">→</span>
+        </div>
       </a>
-      <a routerLink="/shop" [queryParams]="{category: 'funeral'}" class="pairing pairing--funeral">
-        <span>Funeral</span>
+
+      <a routerLink="/shop" [queryParams]="{category:'funeral'}" class="collection-tile collection-tile--funeral">
+        <div class="collection-tile__inner">
+          <span class="collection-tile__label">Funeral</span>
+          <span class="collection-tile__arrow" aria-hidden="true">→</span>
+        </div>
       </a>
-      <a routerLink="/shop" [queryParams]="{category: 'kente'}" class="pairing pairing--kente">
-        <span>Kente</span>
+
+      <a routerLink="/shop" [queryParams]="{category:'kente'}" class="collection-tile collection-tile--kente">
+        <div class="collection-tile__inner">
+          <span class="collection-tile__label">Kente</span>
+          <span class="collection-tile__arrow" aria-hidden="true">→</span>
+        </div>
       </a>
+
     </div>
   </div>
 </section>
 
-<!-- FEATURED FABRICS -->
 <section class="featured">
   <div class="container">
-    <div class="featured__header">
-      <h2 class="section-title">Featured Fabrics</h2>
-      <a routerLink="/shop" class="featured__see-all">See all →</a>
-    </div>
+
+    <header class="featured__header">
+      <div>
+        <span class="section-eyebrow">Selection</span>
+        <h2 class="section-title">Featured Fabrics</h2>
+      </div>
+      <a routerLink="/shop" class="featured__see-all">
+        View all fabrics
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </header>
+
     <div class="featured__grid">
       @for (fabric of (featured$ | async); track fabric.id) {
         <app-fabric-card [fabric]="fabric" />
       }
     </div>
+
   </div>
 </section>
 
-<!-- SUBSCRIBE -->
 <app-subscribe-form />

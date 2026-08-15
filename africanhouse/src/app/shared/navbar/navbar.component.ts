@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, HostListener, ChangeDetectorRef } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { CartService } from '../../core/services/cart.service';
@@ -13,8 +13,21 @@ import { CartService } from '../../core/services/cart.service';
 export class NavbarComponent {
   cartCount$;
   menuOpen = false;
+  scrolled = false;
 
-  constructor(private cartService: CartService) {
+  constructor(
+    private cartService: CartService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.cartCount$ = this.cartService.cartCount$;
+  }
+
+  @HostListener('window:scroll')
+  onScroll(): void {
+    const wasScrolled = this.scrolled;
+    this.scrolled = window.scrollY > 10;
+    if (wasScrolled !== this.scrolled) {
+      this.cdr.markForCheck();
+    }
   }
 }
