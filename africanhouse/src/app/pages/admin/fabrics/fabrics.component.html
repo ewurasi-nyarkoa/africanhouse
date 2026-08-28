@@ -1,299 +1,117 @@
 <div class="admin" [class.menu-open]="menuOpen">
+
+  <!-- DESKTOP SIDEBAR -->
   <aside class="admin__sidebar">
     <div class="admin__sidebar-brand">
-      <span class="admin__sidebar-logo">African House</span>
+      <span class="admin__sidebar-logo">AfriLoom</span>
       <span class="admin__sidebar-label">Admin Panel</span>
     </div>
     <nav class="admin__nav">
-      <a
-        routerLink="/admin/dashboard"
-        routerLinkActive="active"
-        class="admin__nav-link"
-      >
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <rect x="3" y="3" width="7" height="7" />
-          <rect x="14" y="3" width="7" height="7" />
-          <rect x="14" y="14" width="7" height="7" />
-          <rect x="3" y="14" width="7" height="7" />
-        </svg>
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="admin__nav-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Dashboard
       </a>
-      <a
-        routerLink="/admin/fabrics"
-        routerLinkActive="active"
-        class="admin__nav-link"
-      >
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path
-            d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"
-          />
-        </svg>
+      <a routerLink="/admin/fabrics" routerLinkActive="active" class="admin__nav-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
         Fabrics
       </a>
-      <a
-        routerLink="/admin/orders"
-        routerLinkActive="active"
-        class="admin__nav-link"
-      >
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-          <line x1="3" y1="6" x2="21" y2="6" />
-          <path d="M16 10a4 4 0 01-8 0" />
-        </svg>
+      <a routerLink="/admin/orders" routerLinkActive="active" class="admin__nav-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
         Orders
       </a>
     </nav>
     <div class="admin__sidebar-footer">
       <a routerLink="/" class="admin__view-site">
-        <svg
-          width="13"
-          height="13"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
-          <polyline points="15 3 21 3 21 9" />
-          <line x1="10" y1="14" x2="21" y2="3" />
-        </svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         View Site
       </a>
       <button (click)="logout()" class="admin__logout">
-        <svg
-          width="13"
-          height="13"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-          <polyline points="16 17 21 12 16 7" />
-          <line x1="21" y1="12" x2="9" y2="12" />
-        </svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         Sign Out
       </button>
     </div>
   </aside>
 
+  <!-- MOBILE TOP BAR -->
   <div class="admin__mobile-topbar">
-    <span class="admin__mobile-logo">African House</span>
-    <button
-      class="admin__mobile-burger"
-      [class.is-open]="menuOpen"
-      (click)="menuOpen = !menuOpen"
-      aria-label="Toggle menu"
-      [attr.aria-expanded]="menuOpen"
-    >
+    <span class="admin__mobile-logo">AfriLoom</span>
+    <button class="admin__mobile-burger" [class.is-open]="menuOpen" (click)="menuOpen=!menuOpen" aria-label="Toggle menu" [attr.aria-expanded]="menuOpen">
       <span></span><span></span><span></span>
     </button>
   </div>
 
+  <!-- MOBILE SLIDE-IN MENU -->
   <div class="admin__mobile-menu" [class.open]="menuOpen">
     <div class="admin__sidebar-brand">
-      <span class="admin__sidebar-logo">African House</span>
+      <span class="admin__sidebar-logo">AfriLoom</span>
       <span class="admin__sidebar-label">Admin Panel</span>
     </div>
     <nav class="admin__nav">
-      <a
-        routerLink="/admin/dashboard"
-        routerLinkActive="active"
-        class="admin__nav-link"
-        (click)="menuOpen = false"
-      >
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <rect x="3" y="3" width="7" height="7" />
-          <rect x="14" y="3" width="7" height="7" />
-          <rect x="14" y="14" width="7" height="7" />
-          <rect x="3" y="14" width="7" height="7" />
-        </svg>
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="admin__nav-link" (click)="menuOpen=false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Dashboard
       </a>
-      <a
-        routerLink="/admin/fabrics"
-        routerLinkActive="active"
-        class="admin__nav-link"
-        (click)="menuOpen = false"
-      >
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path
-            d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"
-          />
-        </svg>
+      <a routerLink="/admin/fabrics" routerLinkActive="active" class="admin__nav-link" (click)="menuOpen=false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
         Fabrics
       </a>
-      <a
-        routerLink="/admin/orders"
-        routerLinkActive="active"
-        class="admin__nav-link"
-        (click)="menuOpen = false"
-      >
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-          <line x1="3" y1="6" x2="21" y2="6" />
-          <path d="M16 10a4 4 0 01-8 0" />
-        </svg>
+      <a routerLink="/admin/orders" routerLinkActive="active" class="admin__nav-link" (click)="menuOpen=false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
         Orders
       </a>
     </nav>
     <div class="admin__sidebar-footer">
-      <a routerLink="/" class="admin__view-site" (click)="menuOpen = false">
-        <svg
-          width="13"
-          height="13"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
-          <polyline points="15 3 21 3 21 9" />
-          <line x1="10" y1="14" x2="21" y2="3" />
-        </svg>
+      <a routerLink="/" class="admin__view-site" (click)="menuOpen=false">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         View Site
       </a>
       <button (click)="logout()" class="admin__logout">
-        <svg
-          width="13"
-          height="13"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-          <polyline points="16 17 21 12 16 7" />
-          <line x1="21" y1="12" x2="9" y2="12" />
-        </svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         Sign Out
       </button>
     </div>
   </div>
 
   @if (menuOpen) {
-    <div
-      class="admin__overlay"
-      (click)="menuOpen = false"
-      aria-hidden="true"
-    ></div>
+    <div class="admin__overlay" (click)="menuOpen=false" aria-hidden="true"></div>
   }
 
+  <!-- MAIN CONTENT -->
   <main class="admin__main">
+
+    <!-- PAGE HEADER -->
     <div class="admin__top">
       <div>
         <span class="admin__page-eyebrow">Inventory</span>
         <h1 class="admin__page-title">Fabrics</h1>
+        <p class="admin__page-subtitle">Manage your AfriLoom fabric collection and inventory.</p>
       </div>
-      <button class="btn-primary" (click)="showForm = !showForm">
-        {{ showForm ? "Close Form" : "+ Add Fabric" }}
+      <button class="btn-primary" (click)="showForm=!showForm">
+        {{ showForm ? 'Close Form' : '+ Add Fabric' }}
       </button>
     </div>
 
+    <!-- ADD / EDIT FORM -->
     @if (showForm) {
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="fabric-form">
-        <h2>{{ editingId ? "Edit Fabric" : "Add New Fabric" }}</h2>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="fabric-form" novalidate>
+        <h2>{{ editingId ? 'Edit Fabric' : 'Add New Fabric' }}</h2>
 
+        <p class="form-section-label">Basic Information</p>
         <div class="form-grid">
           <div class="field">
-            <label for="fab-name">Name</label>
-            <input
-              id="fab-name"
-              type="text"
-              formControlName="name"
-              placeholder="e.g. GTP Classic"
-            />
+            <label for="fab-name">Fabric Name</label>
+            <input id="fab-name" type="text" formControlName="name" placeholder="e.g. GTP Royal Blue" />
           </div>
           <div class="field">
             <label for="fab-category">Category</label>
             <select id="fab-category" formControlName="category">
               @for (cat of categories; track cat) {
-                <option [value]="cat">{{ cat }}</option>
+                <option [value]="cat">{{ cat | titlecase }}</option>
               }
             </select>
           </div>
           <div class="field">
-            <label for="fab-material">Material</label>
-            <select id="fab-material" formControlName="material">
-              @for (mat of materials; track mat) {
-                <option [value]="mat">{{ mat }}</option>
-              }
-            </select>
-          </div>
-          <div class="field">
-            <label for="fab-subcategory">Subcategory</label>
+            <label for="fab-subcategory">Subcategory / Type</label>
             <select id="fab-subcategory" formControlName="subcategory">
               <option value="" disabled>Select subcategory</option>
               @for (sub of subcategoryOptions; track sub.value) {
@@ -302,59 +120,76 @@
             </select>
           </div>
           <div class="field">
-            <label for="fab-price">Price per Yard (GH₵)</label>
-            <input
-              id="fab-price"
-              type="number"
-              formControlName="price_per_yard"
-            />
+            <label for="fab-material">Material</label>
+            <select id="fab-material" formControlName="material">
+              @for (mat of materials; track mat) {
+                <option [value]="mat">{{ mat | titlecase }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <p class="form-section-label">Pricing &amp; Inventory</p>
+        <div class="form-grid">
+          <div class="field">
+            <label for="fab-price">Selling Price per Yard (GH₵)</label>
+            <input id="fab-price" type="number" formControlName="price_per_yard" min="1" />
           </div>
           <div class="field">
-            <label for="fab-min-yards">Minimum Yards</label>
-            <input
-              id="fab-min-yards"
-              type="number"
-              formControlName="min_yards"
-              min="1"
-            />
+            <label for="fab-min-yards">Minimum Yards per Order</label>
+            <input id="fab-min-yards" type="number" formControlName="min_yards" min="1" />
             <p class="field__hint">Smallest quantity a customer can purchase.</p>
           </div>
           <div class="field">
             <label for="fab-available-yards">Available Yards</label>
-            <input
-              id="fab-available-yards"
-              type="number"
-              formControlName="available_yards"
-              min="0"
-            />
-            <p class="field__hint">Current stock. Product shows as sold out when this falls below the minimum.</p>
-          </div>
-          <div class="field field--check">
-            <label>
-              <input type="checkbox" formControlName="in_stock" />
-              In Stock (manual override)
-            </label>
+            <input id="fab-available-yards" type="number" formControlName="available_yards" min="0" />
+            <p class="field__hint">Product shows as sold out when this falls below the minimum.</p>
           </div>
         </div>
 
-        <div class="field">
-          <label for="fab-desc">Description</label>
-          <textarea
-            id="fab-desc"
-            formControlName="description"
-            rows="3"
-            placeholder="Brief description of the fabric..."
-          ></textarea>
+        <p class="form-section-label">Cost Information — Admin Only</p>
+        <div class="form-grid-2">
+          <div class="field">
+            <label for="fab-cost">Full Piece Cost (GH₵)</label>
+            <input id="fab-cost" type="number" formControlName="full_piece_cost" min="0" placeholder="0.00" />
+            <p class="field__hint">Cost of one complete 12-yard piece. Never shown to customers.</p>
+          </div>
+          <div class="field">
+            <label>Cost Per Yard (calculated)</label>
+            <input type="text" [value]="costPerYard > 0 ? 'GH₵ ' + (costPerYard | number:'1.2-2') : '—'" readonly />
+            <p class="field__hint">Full Piece Cost ÷ 12, calculated automatically.</p>
+          </div>
         </div>
 
-        <div class="field">
-          <label for="fab-image">Fabric Image</label>
-          <input
-            id="fab-image"
-            type="file"
-            accept="image/*"
-            (change)="onFileChange($event)"
-          />
+        @if (costPerYard > 0 && form.get('price_per_yard')?.value > 0) {
+          <div class="cost-info">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <p>
+              Selling GH₵ {{ form.get('price_per_yard')?.value }}/yd &nbsp;·&nbsp;
+              Cost GH₵ {{ costPerYard | number:'1.2-2' }}/yd &nbsp;·&nbsp;
+              <strong>Margin GH₵ {{ (form.get('price_per_yard')?.value - costPerYard) | number:'1.2-2' }}/yd</strong>
+            </p>
+          </div>
+        }
+
+        <p class="form-section-label" style="margin-top:1.25rem;">Description &amp; Image</p>
+        <div class="form-grid-2" style="margin-bottom:1.25rem;">
+          <div class="field">
+            <label for="fab-desc">Description</label>
+            <textarea id="fab-desc" formControlName="description" rows="3" placeholder="Brief description of the fabric…"></textarea>
+          </div>
+          <div class="field">
+            <label for="fab-image">Fabric Image</label>
+            <input id="fab-image" type="file" accept="image/*" (change)="onFileChange($event)" />
+            <p class="field__hint">Leave blank to keep the existing image when editing.</p>
+          </div>
+        </div>
+
+        <div class="field field--check" style="margin-bottom:1rem;">
+          <label>
+            <input type="checkbox" formControlName="in_stock" />
+            In Stock (manual override — auto-set based on available yards)
+          </label>
         </div>
 
         @if (error) {
@@ -363,61 +198,85 @@
 
         <div class="form-actions">
           <button type="submit" class="btn-primary" [disabled]="saving">
-            {{
-              saving ? "Saving…" : editingId ? "Update Fabric" : "Add Fabric"
-            }}
+            {{ saving ? 'Saving…' : editingId ? 'Update Fabric' : 'Add Fabric' }}
           </button>
-          <button type="button" class="btn-outline" (click)="cancelForm()">
-            Cancel
-          </button>
+          <button type="button" class="btn-outline" (click)="cancelForm()">Cancel</button>
         </div>
       </form>
     }
 
+    <!-- SEARCH & FILTERS -->
+    <div class="filter-bar">
+      <div class="filter-bar__search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input
+          type="search"
+          placeholder="Search fabrics…"
+          [value]="searchQuery"
+          (input)="onSearch($event)"
+          aria-label="Search fabrics"
+        />
+      </div>
+      <select (change)="onCategoryFilter($event)" aria-label="Filter by category">
+        <option value="">All Categories</option>
+        @for (cat of categories; track cat) {
+          <option [value]="cat">{{ cat | titlecase }}</option>
+        }
+      </select>
+      <select (change)="onStockFilter($event)" aria-label="Filter by stock status">
+        <option value="">All Stock</option>
+        <option value="in-stock">In Stock</option>
+        <option value="low-stock">Low Stock</option>
+        <option value="sold-out">Sold Out</option>
+      </select>
+      <span class="filter-bar__count">{{ filtered.length }} fabric{{ filtered.length !== 1 ? 's' : '' }}</span>
+    </div>
+
+    <!-- FABRIC LIST -->
     @if (loading) {
       <p class="admin__loading">Loading fabrics…</p>
-    } @else if (fabrics.length === 0) {
-      <p class="admin__empty">No fabrics yet. Add your first fabric above.</p>
+    } @else if (filtered.length === 0) {
+      <p class="admin__empty">
+        {{ allFabrics.length === 0 ? 'No fabrics yet. Add your first fabric above.' : 'No fabrics match your search.' }}
+      </p>
     } @else {
       <div class="fabric-list">
         <div class="fabric-list-header">
           <span></span>
-          <span>Fabric</span>
+          <span>Name</span>
+          <span>Category</span>
+          <span>Price/yd</span>
+          <span>Min yds</span>
+          <span>Available</span>
+          <span>Status</span>
           <span>Actions</span>
         </div>
-        @for (fabric of fabrics; track fabric.id) {
+        @for (fabric of filtered; track fabric.id) {
           <div class="fabric-row">
-            <img
-              [src]="fabric.image_url"
-              [alt]="fabric.name"
-              class="fabric-row__img"
-            />
+            <img [src]="fabric.image_url" [alt]="fabric.name" class="fabric-row__img" />
+
             <div class="fabric-row__info">
               <p class="fabric-row__name">{{ fabric.name }}</p>
-              <p class="fabric-row__meta">
-                {{ fabric.material }} &middot; {{ fabric.category }} &middot;
-                GH₵ {{ fabric.price_per_yard }}/yd &middot;
-                Min: {{ fabric.min_yard }} yds &middot;
-                Available: {{ fabric.available_yards ?? 0 }} yds
-              </p>
-              <span class="fabric-row__stock" [class.out]="!fabric.in_stock">
-                {{ fabric.in_stock ? "In Stock" : "Out of Stock" }}
-              </span>
+              <p class="fabric-row__sub">{{ fabric.subcategory || fabric.material }}</p>
             </div>
+
+            <span class="fabric-row__cell">{{ fabric.category | titlecase }}</span>
+            <span class="fabric-row__cell">GH₵ {{ fabric.price_per_yard }}</span>
+            <span class="fabric-row__cell-muted">{{ fabric.min_yard }} yds</span>
+            <span class="fabric-row__cell">{{ fabric.available_yards }} yds</span>
+
+            <span [class]="'status-badge status-badge--' + getStockStatus(fabric)">
+              {{ getStockLabel(fabric) }}
+            </span>
+
             <div class="fabric-row__actions">
-              <button class="btn-outline" (click)="editFabric(fabric)">
-                Edit
-              </button>
-              <button
-                class="fabric-row__delete"
-                (click)="deleteFabric(fabric.id)"
-              >
-                Delete
-              </button>
+              <button class="fabric-row__edit-btn" (click)="editFabric(fabric)">Edit</button>
+              <button class="fabric-row__delete-btn" (click)="deleteFabric(fabric.id)" [attr.aria-label]="'Delete ' + fabric.name">Delete</button>
             </div>
           </div>
         }
       </div>
     }
+
   </main>
 </div>

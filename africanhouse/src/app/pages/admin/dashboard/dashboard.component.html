@@ -1,9 +1,9 @@
 <div class="admin" [class.menu-open]="menuOpen">
 
-  <!-- ═══ DESKTOP SIDEBAR ═══ -->
+  <!-- DESKTOP SIDEBAR -->
   <aside class="admin__sidebar">
     <div class="admin__sidebar-brand">
-      <span class="admin__sidebar-logo">African House</span>
+      <span class="admin__sidebar-logo">AfriLoom</span>
       <span class="admin__sidebar-label">Admin Panel</span>
     </div>
     <nav class="admin__nav">
@@ -32,18 +32,18 @@
     </div>
   </aside>
 
-  <!-- ═══ MOBILE TOP BAR ═══ -->
+  <!-- MOBILE TOP BAR -->
   <div class="admin__mobile-topbar">
-    <span class="admin__mobile-logo">African House</span>
+    <span class="admin__mobile-logo">AfriLoom</span>
     <button class="admin__mobile-burger" [class.is-open]="menuOpen" (click)="menuOpen=!menuOpen" aria-label="Toggle menu" [attr.aria-expanded]="menuOpen">
       <span></span><span></span><span></span>
     </button>
   </div>
 
-  <!-- ═══ MOBILE SLIDE-IN MENU ═══ -->
+  <!-- MOBILE SLIDE-IN MENU -->
   <div class="admin__mobile-menu" [class.open]="menuOpen">
     <div class="admin__sidebar-brand">
-      <span class="admin__sidebar-logo">African House</span>
+      <span class="admin__sidebar-logo">AfriLoom</span>
       <span class="admin__sidebar-label">Admin Panel</span>
     </div>
     <nav class="admin__nav">
@@ -72,60 +72,293 @@
     </div>
   </div>
 
-  <!-- ═══ MOBILE OVERLAY ═══ -->
   @if (menuOpen) {
     <div class="admin__overlay" (click)="menuOpen=false" aria-hidden="true"></div>
   }
 
-  <!-- ═══ MAIN CONTENT ═══ -->
+  <!-- MAIN CONTENT -->
   <main class="admin__main">
-    <header class="admin__page-header">
+
+    <!-- PAGE HEADER -->
+    <div class="admin__page-header">
       <div>
-        <span class="admin__page-eyebrow">Overview</span>
+        <p class="admin__page-greeting">Welcome back 👋</p>
         <h1 class="admin__page-title">Dashboard</h1>
+        <p class="admin__page-subtitle">Here's what's happening with AfriLoom today.</p>
       </div>
-    </header>
-
-    <!-- STAT CARDS -->
-    <div class="stats">
-      <div class="stat">
-        <div class="stat__icon-wrap">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
-        </div>
-        <p class="stat__value">{{ stats.fabrics }}</p>
-        <p class="stat__label">Total Fabrics</p>
-      </div>
-
-      <div class="stat">
-        <div class="stat__icon-wrap">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-        </div>
-        <p class="stat__value">{{ stats.orders }}</p>
-        <p class="stat__label">Total Orders</p>
-      </div>
-
-      <div class="stat stat--alert">
-        <div class="stat__icon-wrap">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </div>
-        <p class="stat__value">{{ stats.pending }}</p>
-        <p class="stat__label">Pending Orders</p>
-      </div>
-
-      <div class="stat stat--accent">
-        <div class="stat__icon-wrap">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        </div>
-        <p class="stat__value">{{ stats.subscribers }}</p>
-        <p class="stat__label">Subscribers</p>
+      <div class="period-selector" role="group" aria-label="Select time period">
+        @for (p of periods; track p.value) {
+          <button
+            [class.active]="activePeriod === p.value"
+            (click)="selectPeriod(p.value)"
+            [attr.aria-pressed]="activePeriod === p.value">
+            {{ p.label }}
+          </button>
+        }
       </div>
     </div>
 
-    <!-- QUICK ACTIONS -->
-    <div class="quick-links">
-      <a routerLink="/admin/fabrics" class="btn-primary">Manage Fabrics</a>
-      <a routerLink="/admin/orders" class="btn-outline">View Orders</a>
-    </div>
+    @if (loading) {
+      <p class="admin__loading">Loading dashboard…</p>
+    } @else {
+
+      <!-- STAT CARDS -->
+      <div class="stats">
+
+        <div class="stat stat--revenue">
+          <div class="stat__icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <span class="stat__value-sm">GH₵</span>
+          <p class="stat__value">{{ stats.revenue | number:'1.0-0' }}</p>
+          <p class="stat__label">Revenue</p>
+        </div>
+
+        <div class="stat stat--profit">
+          <div class="stat__icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          </div>
+          <span class="stat__value-sm">GH₵</span>
+          <p class="stat__value">
+            @if (stats.profitKnown) {
+              {{ stats.profit | number:'1.0-0' }}
+            } @else {
+              —
+            }
+          </p>
+          <p class="stat__label">Profit</p>
+        </div>
+
+        <div class="stat stat--neutral">
+          <div class="stat__icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          </div>
+          <p class="stat__value">{{ stats.orders }}</p>
+          <p class="stat__label">Orders</p>
+        </div>
+
+        <div class="stat stat--alert">
+          <div class="stat__icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <p class="stat__value">{{ stats.pending }}</p>
+          <p class="stat__label">Pending</p>
+        </div>
+
+        <div class="stat stat--warning">
+          <div class="stat__icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <p class="stat__value">{{ stats.lowStock }}</p>
+          <p class="stat__label">Low / Out of Stock</p>
+        </div>
+
+        <div class="stat stat--neutral">
+          <div class="stat__icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+          </div>
+          <p class="stat__value">{{ stats.fabrics }}</p>
+          <p class="stat__label">Total Fabrics</p>
+        </div>
+
+      </div>
+
+      <!-- SALES OVERVIEW + INVENTORY ALERTS -->
+      <div class="dash-grid">
+
+        <!-- Sales chart -->
+        <div class="admin-card">
+          <div class="admin-card__header">
+            <h3>Sales Overview</h3>
+            <span class="admin-card__meta">Revenue — GH₵</span>
+          </div>
+          <div class="admin-card__body">
+            @if (chartPoints.length === 0 || stats.revenue === 0) {
+              <div class="admin-card__empty">No sales data for this period.</div>
+            } @else {
+              <div class="bar-chart">
+                @for (pt of chartPoints; track pt.label) {
+                  <div class="bar-chart__bar-wrap">
+                    <div
+                      class="bar-chart__bar"
+                      [style.height.%]="pt.heightPct"
+                      [attr.data-value]="'GH₵ ' + (pt.value | number:'1.0-0')"
+                      [attr.aria-label]="pt.label + ': GH₵ ' + pt.value">
+                    </div>
+                    <span class="bar-chart__label">{{ pt.label }}</span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Inventory alerts -->
+        <div class="admin-card">
+          <div class="admin-card__header">
+            <h3>Inventory Alerts</h3>
+            <a routerLink="/admin/fabrics">Manage →</a>
+          </div>
+          @if (inventoryAlerts.length === 0) {
+            <div class="admin-card__empty">All fabrics are well stocked.</div>
+          } @else {
+            <div class="alert-list">
+              @for (item of inventoryAlerts; track item.id) {
+                <div class="alert-list__item">
+                  <img
+                    [src]="item.image_url"
+                    [alt]="item.name"
+                    class="alert-list__img"
+                  />
+                  <div class="alert-list__info">
+                    <p class="alert-list__name">{{ item.name }}</p>
+                    <p class="alert-list__yards">
+                      @if (item.status === 'sold-out') {
+                        0 yards remaining
+                      } @else {
+                        {{ item.available_yards }} yards remaining
+                      }
+                    </p>
+                  </div>
+                  <span [class]="'status-badge status-badge--' + item.status">
+                    {{ item.status === 'sold-out' ? 'Sold Out' : 'Low Stock' }}
+                  </span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+      </div>
+
+      <!-- RECENT ORDERS + CATEGORY SALES -->
+      <div class="dash-grid">
+
+        <!-- Recent orders -->
+        <div class="admin-card">
+          <div class="admin-card__header">
+            <h3>Recent Orders</h3>
+            <a routerLink="/admin/orders">View all →</a>
+          </div>
+          @if (recentOrders.length === 0) {
+            <div class="admin-card__empty">No orders in this period.</div>
+          } @else {
+            <table class="mini-table" aria-label="Recent orders">
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Status</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (order of recentOrders; track order.id) {
+                  <tr>
+                    <td>
+                      <span class="mini-table__name">#{{ order.id }}</span>
+                      <p class="mini-table__sub">{{ order.created_at | date:'dd MMM' }}</p>
+                    </td>
+                    <td>{{ order.customer_name }}</td>
+                    <td>{{ order.item_count }}</td>
+                    <td>
+                      <span [class]="getStatusClass(order.status)">
+                        {{ order.status | titlecase }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="mini-table__amount">GH₵ {{ order.total_amount | number:'1.0-0' }}</span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+
+        <!-- Sales by category -->
+        <div class="admin-card">
+          <div class="admin-card__header">
+            <h3>Sales by Category</h3>
+            <span class="admin-card__meta">Revenue share</span>
+          </div>
+          <div class="admin-card__body">
+            @if (categorySales.length === 0) {
+              <div class="admin-card__empty">No sales data yet.</div>
+            } @else {
+              <div class="cat-chart">
+                @for (cat of categorySales; track cat.category) {
+                  <div class="cat-chart__row">
+                    <div class="cat-chart__label-row">
+                      <span class="cat-chart__name">{{ cat.category | titlecase }}</span>
+                      <span class="cat-chart__value">GH₵ {{ cat.revenue | number:'1.0-0' }}</span>
+                    </div>
+                    <div class="cat-chart__track">
+                      <div
+                        class="cat-chart__fill cat-chart__fill--{{ cat.category }}"
+                        [style.width.%]="getCategoryPct(cat)">
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TOP SELLING FABRICS -->
+      @if (topFabrics.length > 0) {
+        <div class="admin-card">
+          <div class="admin-card__header">
+            <h3>Top Selling Fabrics</h3>
+            <a routerLink="/admin/fabrics">View inventory →</a>
+          </div>
+          <table class="mini-table" aria-label="Top selling fabrics">
+            <thead>
+              <tr>
+                <th>Fabric</th>
+                <th>Category</th>
+                <th>Yards Sold</th>
+                <th>Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (fabric of topFabrics; track fabric.fabric_id) {
+                <tr>
+                  <td>
+                    <div class="mini-table__cell-flex">
+                      <img
+                        [src]="fabric.image_url"
+                        [alt]="fabric.fabric_name"
+                        class="mini-table__img"
+                      />
+                      <span class="mini-table__name">{{ fabric.fabric_name }}</span>
+                    </div>
+                  </td>
+                  <td>{{ fabric.category | titlecase }}</td>
+                  <td>{{ fabric.yards_sold }} yds</td>
+                  <td>
+                    <span class="mini-table__amount">GH₵ {{ fabric.revenue | number:'1.0-0' }}</span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      <!-- PROFIT NOTE when no historical cost exists -->
+      @if (!stats.profitKnown && stats.orders > 0) {
+        <div class="cost-info" style="margin-top:1rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <p>Profit figures are unavailable for orders placed before the Full Piece Cost feature was activated. Add cost prices to your fabrics so future orders track profit accurately.</p>
+        </div>
+      }
+
+    }
+
   </main>
-
 </div>

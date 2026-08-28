@@ -1,9 +1,9 @@
 <div class="admin" [class.menu-open]="menuOpen">
 
-  <!-- ═══ DESKTOP SIDEBAR ═══ -->
+  <!-- DESKTOP SIDEBAR -->
   <aside class="admin__sidebar">
     <div class="admin__sidebar-brand">
-      <span class="admin__sidebar-logo">African House</span>
+      <span class="admin__sidebar-logo">AfriLoom</span>
       <span class="admin__sidebar-label">Admin Panel</span>
     </div>
     <nav class="admin__nav">
@@ -32,18 +32,18 @@
     </div>
   </aside>
 
-  <!-- ═══ MOBILE TOP BAR ═══ -->
+  <!-- MOBILE TOP BAR -->
   <div class="admin__mobile-topbar">
-    <span class="admin__mobile-logo">African House</span>
+    <span class="admin__mobile-logo">AfriLoom</span>
     <button class="admin__mobile-burger" [class.is-open]="menuOpen" (click)="menuOpen=!menuOpen" aria-label="Toggle menu" [attr.aria-expanded]="menuOpen">
       <span></span><span></span><span></span>
     </button>
   </div>
 
-  <!-- ═══ MOBILE SLIDE-IN MENU ═══ -->
+  <!-- MOBILE SLIDE-IN MENU -->
   <div class="admin__mobile-menu" [class.open]="menuOpen">
     <div class="admin__sidebar-brand">
-      <span class="admin__sidebar-logo">African House</span>
+      <span class="admin__sidebar-logo">AfriLoom</span>
       <span class="admin__sidebar-label">Admin Panel</span>
     </div>
     <nav class="admin__nav">
@@ -72,49 +72,117 @@
     </div>
   </div>
 
-  <!-- ═══ MOBILE OVERLAY ═══ -->
   @if (menuOpen) {
     <div class="admin__overlay" (click)="menuOpen=false" aria-hidden="true"></div>
   }
 
-  <!-- ═══ MAIN CONTENT ═══ -->
+  <!-- MAIN CONTENT -->
   <main class="admin__main">
 
-    <header class="admin__page-header">
+    <!-- PAGE HEADER -->
+    <div class="admin__page-header">
       <div>
         <span class="admin__page-eyebrow">Fulfilment</span>
         <h1 class="admin__page-title">Orders</h1>
+        <p class="admin__page-subtitle">Manage and track your AfriLoom customer orders.</p>
       </div>
-    </header>
+    </div>
 
+    <!-- ORDER STATS -->
+    @if (!loading) {
+      <div class="stats" style="grid-template-columns:repeat(5,1fr); margin-bottom:1.75rem;">
+        <div class="stat stat--neutral">
+          <div class="stat__icon-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          </div>
+          <p class="stat__value">{{ stats.total }}</p>
+          <p class="stat__label">Total Orders</p>
+        </div>
+        <div class="stat stat--alert">
+          <div class="stat__icon-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <p class="stat__value">{{ stats.pending }}</p>
+          <p class="stat__label">Pending</p>
+        </div>
+        <div class="stat stat--neutral">
+          <div class="stat__icon-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+          </div>
+          <p class="stat__value">{{ stats.processing }}</p>
+          <p class="stat__label">Processing</p>
+        </div>
+        <div class="stat stat--neutral">
+          <div class="stat__icon-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p class="stat__value">{{ stats.delivered }}</p>
+          <p class="stat__label">Delivered</p>
+        </div>
+        <div class="stat stat--revenue">
+          <div class="stat__icon-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <span class="stat__value-sm">GH₵</span>
+          <p class="stat__value">{{ stats.revenue | number:'1.0-0' }}</p>
+          <p class="stat__label">Revenue</p>
+        </div>
+      </div>
+    }
+
+    <!-- SEARCH & STATUS FILTER -->
+    <div class="filter-bar">
+      <div class="filter-bar__search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input
+          type="search"
+          placeholder="Search by order ID, customer name or phone…"
+          [value]="searchQuery"
+          (input)="onSearch($event)"
+          aria-label="Search orders"
+        />
+      </div>
+      <select (change)="onStatusFilter($event)" aria-label="Filter by status">
+        <option value="">All Statuses</option>
+        @for (s of statuses; track s.value) {
+          <option [value]="s.value">{{ s.label }}</option>
+        }
+      </select>
+      <span class="filter-bar__count">{{ filtered.length }} order{{ filtered.length !== 1 ? 's' : '' }}</span>
+    </div>
+
+    <!-- ORDER LIST -->
     @if (loading) {
       <p class="admin__loading">Loading orders…</p>
-    } @else if (orders.length === 0) {
-      <p class="admin__empty">No orders yet.</p>
+    } @else if (filtered.length === 0) {
+      <p class="admin__empty">
+        {{ allOrders.length === 0 ? 'No orders yet.' : 'No orders match your search.' }}
+      </p>
     } @else {
       <div class="orders">
-        @for (order of orders; track order.id) {
+        @for (order of filtered; track order.id) {
+
+          @let profit = computeOrderProfit(order);
+
           <div class="order-card">
 
             <!-- CARD HEADER -->
             <div class="order-card__header">
-              <div>
-                <p class="order-card__id">Order #{{ order.id }}</p>
-                <p class="order-card__date">{{ order.created_at | date:'dd MMM yyyy, HH:mm' }}</p>
+              <div class="order-card__header-left">
+                <span class="order-card__id">Order #{{ order.id }}</span>
+                <span class="order-card__date">{{ order.created_at | date:'dd MMM yyyy, HH:mm' }}</span>
               </div>
               <div class="order-card__header-right">
-                <span class="order-card__total">GH₵ {{ order.total_amount }}</span>
-                <!-- Status badge for quick scan -->
-                <span class="order-card__status-badge status--{{ order.status }}">
+                <span class="order-card__total">GH₵ {{ order.total_amount | number:'1.0-0' }}</span>
+                <span [class]="'status-badge status-badge--' + order.status">
                   {{ getStatusLabel(order.status) }}
                 </span>
               </div>
             </div>
 
-            <!-- CARD BODY -->
+            <!-- CARD BODY: customer + items -->
             <div class="order-card__body">
 
-              <!-- Customer -->
               <div class="order-card__customer">
                 <p><strong>{{ order.customer_name }}</strong></p>
                 <p>{{ order.customer_phone }}</p>
@@ -122,45 +190,64 @@
                 @if (order.delivery_note) {
                   <p class="order-card__note">{{ order.delivery_note }}</p>
                 }
+                <p style="margin-top:0.5rem; font-size:0.72rem; color:var(--grey);">
+                  Ref: {{ order.paystack_reference }}
+                </p>
               </div>
 
-              <!-- Items -->
-              <div class="order-card__items">
-                <p class="order-card__items-title">Items Ordered</p>
-                @for (item of order.items; track item.fabric_id) {
-                  <div class="order-item">
-                    <div class="order-item__image">
-                      <img [src]="item.image_url" [alt]="item.fabric_name" />
-                    </div>
-                    <div class="order-item__details">
-                      <p class="order-item__name">{{ item.fabric_name }}</p>
-                      <div class="order-item__meta">
-                        <span>{{ item.material | uppercase }}</span>
-                        <span>{{ item.yards }} yards</span>
-                        <span>GH₵ {{ item.price_per_yard }}/yd</span>
-                        <strong>GH₵ {{ item.subtotal }}</strong>
+              <div>
+                <div class="order-card__items">
+                  <p class="order-card__items-title">Items Ordered</p>
+                  @for (item of order.items; track item.fabric_id) {
+                    <div class="order-item">
+                      <div class="order-item__image">
+                        <img [src]="item.image_url" [alt]="item.fabric_name" />
+                      </div>
+                      <div class="order-item__details">
+                        <p class="order-item__name">{{ item.fabric_name }}</p>
+                        <div class="order-item__meta">
+                          <span>{{ item.material | uppercase }}</span>
+                          <span>{{ item.yards }} yds</span>
+                          <span>GH₵ {{ item.price_per_yard }}/yd</span>
+                          <strong>GH₵ {{ item.subtotal | number:'1.0-0' }}</strong>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                }
+                  }
+                </div>
+
+                <!-- STATUS STEPPER -->
+                <div class="stepper" role="list" aria-label="Order progress" style="margin-top:1rem;">
+                  @for (step of statuses; track step.value) {
+                    <div
+                      class="stepper__step"
+                      [class.active]="order.status === step.value"
+                      [class.done]="isStepDone(order.status, step.value)"
+                      role="listitem"
+                      [attr.aria-current]="order.status === step.value ? 'step' : null">
+                      <div class="stepper__icon">{{ step.icon }}</div>
+                      <p class="stepper__label">{{ step.label }}</p>
+                    </div>
+                  }
+                </div>
               </div>
 
-              <!-- Status stepper — numbered circles -->
-              <div class="stepper" role="list" aria-label="Order progress">
-                @for (step of statuses; track step.value) {
-                  <div
-                    class="stepper__step"
-                    [class.active]="order.status === step.value"
-                    [class.done]="isStepDone(order.status, step.value)"
-                    role="listitem"
-                    [attr.aria-current]="order.status === step.value ? 'step' : null">
-                    <div class="stepper__icon">{{ step.icon }}</div>
-                    <p class="stepper__label">{{ step.label }}</p>
-                  </div>
-                }
-              </div>
+            </div>
 
-            </div><!-- /order-card__body -->
+            <!-- PROFIT ROW (admin only) -->
+            @if (profit.known) {
+              <div class="order-card__profit-row">
+                <span>
+                  Revenue: <strong>GH₵ {{ order.total_amount | number:'1.0-0' }}</strong>
+                </span>
+                <span>
+                  Cost: <strong>GH₵ {{ (order.total_amount - profit.profit) | number:'1.0-0' }}</strong>
+                </span>
+                <span>
+                  Profit: <strong>GH₵ {{ profit.profit | number:'1.0-0' }}</strong>
+                </span>
+              </div>
+            }
 
             <!-- UPDATE STATUS -->
             <div class="order-card__actions">
@@ -176,7 +263,7 @@
               </select>
             </div>
 
-          </div><!-- /order-card -->
+          </div>
         }
       </div>
     }

@@ -14,7 +14,7 @@ import { PaymentService } from '../../core/services/payment.service';
   imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
   form!: FormGroup;
@@ -33,15 +33,15 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private paymentService: PaymentService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private title: Title
+    private title: Title,
   ) {}
 
   ngOnInit(): void {
-    this.title.setTitle('Checkout — African House');
+    this.title.setTitle('Checkout — AfriLoom Fabrics');
     this.form = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(2)]],
-      phone: ['', [Validators.required, Validators.pattern(/^0[0-9]{9}$/)]],
-      location: ['', Validators.required],
+      fullName:     ['', [Validators.required, Validators.minLength(2)]],
+      phone:        ['', [Validators.required, Validators.pattern(/^0[0-9]{9}$/)]],
+      location:     ['', Validators.required],
       deliveryNote: [''],
     });
 
@@ -57,6 +57,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.form.markAllAsTouched();
       return;
     }
+
     this.placing = true;
     this.orderError = '';
     this.cdr.markForCheck();
@@ -68,7 +69,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       const result = await this.paymentService.openPaystack(
         `${phone}@africanhouse.com`,
         this.total,
-        { customer_name: fullName, phone, location }
+        { customer_name: fullName, phone, location },
       );
       paystackReference = result.reference;
     } catch {
@@ -81,7 +82,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     for (const item of this.items) {
       const { data: rpcData, error: rpcError } = await this.supabase.client.rpc(
         'deduct_inventory',
-        { p_fabric_id: Number(item.fabric.id), p_yards: item.yards }
+        { p_fabric_id: Number(item.fabric.id), p_yards: item.yards },
       );
 
       if (rpcError || rpcData?.success === false) {
@@ -93,23 +94,40 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       }
     }
 
+    const fabricIds = this.items.map(i => Number(i.fabric.id));
+    const { data: costsData } = await this.supabase.client
+      .from('fabric_costs')
+      .select('fabric_id, full_piece_cost')
+      .in('fabric_id', fabricIds);
+
+    const costsMap = new Map<number, number>();
+    for (const row of costsData ?? []) {
+      costsMap.set(Number(row.fabric_id), Number(row.full_piece_cost ?? 0));
+    }
+
     const { data, error } = await this.supabase.client.from('orders').insert({
-      customer_name: fullName,
-      customer_phone: phone,
+      customer_name:       fullName,
+      customer_phone:      phone,
       location,
-      delivery_note: deliveryNote,
-      paystack_reference: paystackReference,
-      total_amount: this.total,
-      status: 'payment_confirmed',
-      items: this.items.map(i => ({
-        fabric_id: i.fabric.id,
-        fabric_name: i.fabric.name,
-        image_url: i.fabric.imageUrl,
-        material: i.fabric.material,
-        yards: i.yards,
-        price_per_yard: i.fabric.pricePerYard,
-        subtotal: i.fabric.pricePerYard * i.yards
-      }))
+      delivery_note:       deliveryNote,
+      paystack_reference:  paystackReference,
+      total_amount:        this.total,
+      status:              'payment_confirmed',
+      items: this.items.map(i => {
+        const fullPieceCost  = costsMap.get(Number(i.fabric.id)) ?? 0;
+        const costPerYardAtSale = fullPieceCost > 0 ? fullPieceCost / 12 : 0;
+        return {
+          fabric_id:            i.fabric.id,
+          fabric_name:          i.fabric.name,
+          image_url:            i.fabric.imageUrl,
+          material:             i.fabric.material,
+          category:             i.fabric.category,
+          yards:                i.yards,
+          price_per_yard:       i.fabric.pricePerYard,
+          subtotal:             i.fabric.pricePerYard * i.yards,
+          cost_per_yard_at_sale: costPerYardAtSale,
+        };
+      }),
     }).select('id').single();
 
     if (error) {
@@ -120,6 +138,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.cartService.clearCart();
       this.router.navigate(['/track', data.id]);
     }
+
     this.placing = false;
     this.cdr.markForCheck();
   }

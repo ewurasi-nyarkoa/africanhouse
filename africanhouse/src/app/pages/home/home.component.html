@@ -1,39 +1,117 @@
-<section class="hero">
+<section class="hero" [class.hero--loaded]="heroLoaded" aria-label="Featured fabrics">
 
-  <div class="hero__content">
-    <span class="hero__eyebrow">Fabric House · Est. Ghana</span>
-    <h1 class="hero__title">
-      Cloth for every<br/>moment<br/>that matters
-    </h1>
-    <p class="hero__sub">
-      GTP, Ankara, Kente, damask, voile and brocade —
-      sold unsewn by the yard so your tailor can craft
-      something entirely yours.
-    </p>
-    <div class="hero__actions">
-      <a routerLink="/shop" class="btn-primary">Shop Fabrics</a>
-      <a routerLink="/shop" [queryParams]="{category:'funeral'}" class="btn-outline">Funeral Collection</a>
-    </div>
-    <div class="hero__scroll-hint" aria-hidden="true">
-      <span class="hero__scroll-line"></span>
-      <span class="hero__scroll-label">Scroll</span>
-    </div>
+  <div class="hero__bg" aria-hidden="true">
+    <span class="hero__bg-word hero__bg-word--1">AFRILOOM</span>
+    <span class="hero__bg-word hero__bg-word--2">FABRICS</span>
+    <span class="hero__bg-geo hero__bg-geo--tl"></span>
+    <span class="hero__bg-geo hero__bg-geo--br"></span>
+    <span class="hero__gold-rule hero__gold-rule--h"></span>
+    <span class="hero__gold-rule hero__gold-rule--v"></span>
   </div>
 
-  <div class="hero__media">
-    <div class="hero__image-frame">
-      <img
-        src="images/hero.png"
-        alt="Premium African fabric — African House"
-        class="hero__img hero__img--primary"
-      />
-      <img
-        src="images/hero2.jpg"
-        alt="African House fabric collection"
-        class="hero__img hero__img--accent"
-      />
+  <div class="hero__stage" aria-live="polite" aria-atomic="true">
+    @for (fabric of heroFabrics; track trackById($index, fabric)) {
+      <div
+        class="hero__card"
+        [attr.data-state]="getCardState($index)"
+        [attr.aria-hidden]="$index !== activeIndex">
+        <div class="hero__card-frame">
+          <img
+            [src]="fabric.imageUrl"
+            [alt]="fabric.name"
+            class="hero__card-img"
+            loading="eager"
+          />
+          <div class="hero__card-sheen" aria-hidden="true"></div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="hero__content" [class.hero__content--visible]="heroLoaded">
+
+    <div class="hero__brand">
+      <span class="hero__eyebrow">Est. Ghana · Premium Fabric House</span>
+      <h1 class="hero__title">
+        <span class="hero__title-line">AfriLoom</span>
+        <span class="hero__title-line hero__title-line--italic">Fabrics</span>
+      </h1>
+      <p class="hero__tagline">Every fabric tells a story.</p>
     </div>
-    <div class="hero__media-corner" aria-hidden="true"></div>
+
+    @if (activeFabric) {
+      <div class="hero__fabric-info" [attr.aria-label]="'Featured: ' + activeFabric.name">
+        <span class="hero__fabric-cat">{{ activeFabric.category | titlecase }}</span>
+        <p class="hero__fabric-name">{{ activeFabric.name }}</p>
+        <p class="hero__fabric-price">
+          GH₵ {{ activeFabric.pricePerYard }}<span class="hero__fabric-unit"> / yard</span>
+        </p>
+        <p class="hero__fabric-desc">{{ activeFabric.description }}</p>
+        <a [routerLink]="['/fabric', activeFabric.id]" class="hero__fabric-link">
+          View fabric
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+    }
+
+    <div class="hero__sub">
+      <p class="hero__sub-copy">Premium fabrics, thoughtfully selected for every occasion.</p>
+      <div class="hero__actions">
+        <a routerLink="/shop" class="btn-primary hero__cta">Shop Fabrics</a>
+        <a routerLink="/shop" [queryParams]="{category:'funeral'}" class="hero__ghost-cta">
+          Funeral Collection
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  @if (heroFabrics.length > 1) {
+    <div class="hero__nav" aria-label="Carousel navigation">
+      <button
+        class="hero__nav-btn hero__nav-btn--prev"
+        (click)="navigate(-1)"
+        [disabled]="animating"
+        aria-label="Previous fabric">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <div class="hero__dots" role="tablist" aria-label="Select fabric">
+        @for (fabric of heroFabrics; track trackById($index, fabric)) {
+          <button
+            class="hero__dot"
+            [class.hero__dot--active]="$index === activeIndex"
+            (click)="goTo($index)"
+            [disabled]="animating"
+            role="tab"
+            [attr.aria-selected]="$index === activeIndex"
+            [attr.aria-label]="'View ' + fabric.name">
+          </button>
+        }
+      </div>
+      <button
+        class="hero__nav-btn hero__nav-btn--next"
+        (click)="navigate(1)"
+        [disabled]="animating"
+        aria-label="Next fabric">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </div>
+  }
+
+  <div class="hero__scroll-hint" aria-hidden="true">
+    <span class="hero__scroll-line"></span>
+    <span class="hero__scroll-label">Scroll</span>
   </div>
 
 </section>
@@ -114,7 +192,7 @@
     </header>
 
     <div class="featured__grid">
-      @for (fabric of (featured$ | async); track fabric.id) {
+      @for (fabric of featured; track fabric.id) {
         <app-fabric-card [fabric]="fabric" />
       }
     </div>
