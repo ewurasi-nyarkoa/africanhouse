@@ -132,3 +132,18 @@
     <a routerLink="/shop" class="btn-primary">Back to Shop</a>
   </div>
 }
+
+@if (relatedFabrics.length > 0) {
+  <section class="you-might-like">
+    <div class="container">
+      <h2 class="you-might-like__heading">You Might Like</h2>
+      <div class="you-might-like__grid">
+        @for (related of relatedFabrics; track related.id) {
+          <a [routerLink]="['/fabric', related.id]" class="you-might-like__item" [attr.aria-label]="related.name">
+            <img [src]="related.imageUrl" [alt]="related.name" loading="lazy" />
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+}

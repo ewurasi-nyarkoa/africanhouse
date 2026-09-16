@@ -64,6 +64,23 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
     const { fullName, phone, location, deliveryNote } = this.form.value;
 
+    const fabricIds = this.items.map(i => Number(i.fabric.id));
+    const { data: freshFabrics } = await this.supabase.client
+      .from('fabrics')
+      .select('id, available_yards, min_yard, in_stock')
+      .in('id', fabricIds);
+
+    for (const item of this.items) {
+      const live = (freshFabrics ?? []).find((f: any) => String(f.id) === item.fabric.id);
+      if (!live || !live.in_stock || Number(live.available_yards) < item.yards) {
+        const available = live ? Number(live.available_yards) : 0;
+        this.orderError = `Only ${available} yard${available === 1 ? '' : 's'} are currently available for "${item.fabric.name}". Please update your cart before continuing.`;
+        this.placing = false;
+        this.cdr.markForCheck();
+        return;
+      }
+    }
+
     let paystackReference: string;
     try {
       const result = await this.paymentService.openPaystack(
@@ -94,7 +111,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       }
     }
 
-    const fabricIds = this.items.map(i => Number(i.fabric.id));
     const { data: costsData } = await this.supabase.client
       .from('fabric_costs')
       .select('fabric_id, full_piece_cost')

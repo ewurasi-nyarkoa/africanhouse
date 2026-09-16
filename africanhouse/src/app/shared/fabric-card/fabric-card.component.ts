@@ -15,8 +15,12 @@ export class FabricCardComponent implements OnChanges {
 
   yards = 0;
 
+  get remainingAvailable(): number {
+    return this.fabric.availableYards - this.cartService.yardsInCart(this.fabric.id);
+  }
+
   get canIncrement(): boolean {
-    return this.yards + this.fabric.minYards <= this.fabric.availableYards;
+    return this.yards + this.fabric.minYards <= this.remainingAvailable;
   }
 
   get canDecrement(): boolean {

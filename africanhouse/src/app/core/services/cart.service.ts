@@ -11,13 +11,22 @@ export class CartService {
   cartCount$ = this.cart$.pipe(map(items => items.reduce((sum, i) => sum + i.yards, 0)));
   cartTotal$ = this.cart$.pipe(map(items => items.reduce((sum, i) => sum + i.fabric.pricePerYard * i.yards, 0)));
 
+  yardsInCart(fabricId: string): number {
+    return this.cartSubject.value.find(i => i.fabric.id === fabricId)?.yards ?? 0;
+  }
+
   addToCart(fabric: Fabric, yards: number): void {
     const current = this.cartSubject.value;
     const existing = current.find(i => i.fabric.id === fabric.id);
     if (existing) {
-      this.cartSubject.next(current.map(i => i.fabric.id === fabric.id ? { ...i, yards: i.yards + yards } : i));
+      const merged = existing.yards + yards;
+      const capped = Math.min(merged, fabric.availableYards);
+      this.cartSubject.next(
+        current.map(i => i.fabric.id === fabric.id ? { ...i, yards: capped } : i)
+      );
     } else {
-      this.cartSubject.next([...current, { fabric, yards }]);
+      const capped = Math.min(yards, fabric.availableYards);
+      this.cartSubject.next([...current, { fabric, yards: capped }]);
     }
   }
 
