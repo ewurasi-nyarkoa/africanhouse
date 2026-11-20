@@ -15,6 +15,7 @@ export class AccountLoginComponent {
   form: ReturnType<FormBuilder['group']>;
   error   = '';
   loading = false;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,

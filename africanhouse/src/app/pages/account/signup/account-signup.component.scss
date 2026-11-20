@@ -63,3 +63,68 @@
 
   &__guest { margin-top: 0.75rem; font-size: 0.78rem; text-align: center; a { color: var(--grey); } }
 }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+
+  label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+  }
+
+  input {
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--light-grey);
+    background: var(--ivory);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color var(--ease), background var(--ease);
+    width: 100%;
+
+    &::placeholder { color: #b0a898; }
+    &:focus { border-color: var(--burgundy); background: var(--white); }
+  }
+
+  &__password {
+    position: relative;
+
+    input { padding-right: 2.75rem; }
+  }
+
+  &__toggle {
+    position: absolute;
+    right: 0.65rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    color: var(--grey);
+    transition: color var(--ease);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover { color: var(--charcoal); }
+    &:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  }
+
+  &__error {
+    font-size: 0.75rem;
+    color: var(--burgundy);
+  }
+
+  &__hint {
+    font-size: 0.72rem;
+    color: var(--grey);
+    line-height: 1.5;
+  }
+}
