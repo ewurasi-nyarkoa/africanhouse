@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, HostListener, ChangeDetectorRef } f
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { CartService } from '../../core/services/cart.service';
+import { CustomerAuthService } from '../../core/services/customer-auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -17,6 +18,7 @@ export class NavbarComponent {
 
   constructor(
     private cartService: CartService,
+    public customerAuth: CustomerAuthService,
     private cdr: ChangeDetectorRef
   ) {
     this.cartCount$ = this.cartService.cartCount$;

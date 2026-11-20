@@ -72,7 +72,7 @@
         </fieldset>
 
         <button type="submit" class="btn-primary checkout__submit" [disabled]="placing">
-          {{ placing ? 'Processing...' : 'Pay Now — GH₵ ' + total }}
+          {{ placing ? 'Processing...' : 'Pay Now — GH₵ ' + (finalTotal | number:'1.0-2') }}
         </button>
 
         @if (orderError) {
@@ -106,15 +106,21 @@
         <div class="checkout__totals">
           <div class="checkout__total-row">
             <span>Subtotal</span>
-            <span>GH₵ {{ total }}</span>
+            <span>GH₵ {{ subtotal | number:'1.0-2' }}</span>
           </div>
+          @if (discount > 0 && promotion) {
+            <div class="checkout__total-row checkout__total-row--discount">
+              <span>{{ promotion.name }} ({{ promotion.discountType === 'percentage' ? promotion.discountValue + '%' : 'GH₵' + promotion.discountValue }} off)</span>
+              <span>− GH₵ {{ discount | number:'1.0-2' }}</span>
+            </div>
+          }
           <div class="checkout__total-row">
             <span>Delivery</span>
             <span class="checkout__delivery-note">TBD</span>
           </div>
           <div class="checkout__total-row checkout__total-row--grand">
             <span>Total</span>
-            <span>GH₵ {{ total }}</span>
+            <span>GH₵ {{ finalTotal | number:'1.0-2' }}</span>
           </div>
         </div>
 

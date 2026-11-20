@@ -3,29 +3,29 @@
     <!-- HEADER -->
     <div class="tracking__header">
       <h1>Track Your Order</h1>
-      <p>Enter your order ID to see the current status of your delivery.</p>
+      <p>Enter your Order ID to see the current status of your delivery.</p>
     </div>
 
     <!-- SEARCH -->
-    <div class="tracking__search">
-      <input
-        type="text"
-        [(ngModel)]="orderId"
-        placeholder="Enter your Order ID e.g. 12"
-        (keyup.enter)="search()"
-      />
-      <button class="btn-primary" (click)="search()" [disabled]="loading">
-        {{ loading ? "Searching..." : "Track Order" }}
-      </button>
+    <div class="tracking__search-form">
+      <div class="tracking__search">
+        <input
+          type="text"
+          [(ngModel)]="orderId"
+          placeholder="Order ID — e.g. 12"
+          (keyup.enter)="search()"
+        />
+        <button class="btn-primary" (click)="search()" [disabled]="loading">
+          {{ loading ? "Searching..." : "Track Order" }}
+        </button>
+      </div>
     </div>
 
     <!-- NOT FOUND -->
     @if (notFound) {
       <div class="tracking__not-found">
         <p>No order found with that ID. Please check and try again.</p>
-        <p>
-          Need help? Call us on <a href="tel:+233240070628">0240 070 628</a>
-        </p>
+        <p>Need help? Call us on <a href="tel:+233240070628">0240 070 628</a></p>
       </div>
     }
 
@@ -41,6 +41,10 @@
           <div class="tracking__info-row">
             <span>Customer</span>
             <strong>{{ order.customer_name }}</strong>
+          </div>
+          <div class="tracking__info-row">
+            <span>Phone</span>
+            <strong>{{ order.customer_phone }}</strong>
           </div>
           <div class="tracking__info-row">
             <span>Delivery to</span>
@@ -67,8 +71,7 @@
             <div
               class="stepper__step"
               [class.done]="isStepDone(order.status, step.value)"
-              [class.active]="isStepActive(order.status, step.value)"
-            >
+              [class.active]="isStepActive(order.status, step.value)">
               <div class="stepper__icon-wrap">
                 <span class="stepper__icon">{{ step.icon }}</span>
               </div>
@@ -89,9 +92,7 @@
 
         <div class="tracking__contact">
           <p>Questions about your order?</p>
-          <a href="tel:+233240070628" class="tracking__phone"
-            >📞 0240 070 628</a
-          >
+          <a href="tel:+233240070628" class="tracking__phone">📞 0240 070 628</a>
         </div>
 
         <a routerLink="/shop" class="tracking__continue">Continue Shopping →</a>

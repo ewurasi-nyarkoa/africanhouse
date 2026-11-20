@@ -1,23 +1,32 @@
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { map, shareReplay, tap } from 'rxjs/operators';
 import { Fabric } from '../models/fabric';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({ providedIn: 'root' })
 export class FabricService {
   private db;
+  private allFabrics$: Observable<Fabric[]> | null = null;
 
   constructor(private supabase: SupabaseService) {
     this.db = this.supabase.client;
   }
 
   getAll(): Observable<Fabric[]> {
-    return from(
-      this.db.from('fabrics').select('*').order('created_at', { ascending: false })
-    ).pipe(
-      map((res: any) => (res.data ?? []).map(this.mapRow))
-    );
+    if (!this.allFabrics$) {
+      this.allFabrics$ = from(
+        this.db.from('fabrics').select('*').order('created_at', { ascending: false })
+      ).pipe(
+        map((res: any) => (res.data ?? []).map(this.mapRow)),
+        shareReplay(1)
+      );
+    }
+    return this.allFabrics$;
+  }
+
+  invalidateCache(): void {
+    this.allFabrics$ = null;
   }
 
   getById(id: string): Observable<Fabric | undefined> {
@@ -29,18 +38,14 @@ export class FabricService {
   }
 
   getByCategory(category: Fabric['category']): Observable<Fabric[]> {
-    return from(
-      this.db.from('fabrics').select('*').eq('category', category)
-    ).pipe(
-      map((res: any) => (res.data ?? []).map(this.mapRow))
+    return this.getAll().pipe(
+      map(fabrics => fabrics.filter(f => f.category === category))
     );
   }
 
   getByMaterial(material: Fabric['material']): Observable<Fabric[]> {
-    return from(
-      this.db.from('fabrics').select('*').eq('material', material)
-    ).pipe(
-      map((res: any) => (res.data ?? []).map(this.mapRow))
+    return this.getAll().pipe(
+      map(fabrics => fabrics.filter(f => f.material === material))
     );
   }
 

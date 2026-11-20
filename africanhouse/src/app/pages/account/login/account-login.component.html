@@ -1,0 +1,32 @@
+<div class="auth-page">
+  <div class="auth-page__box">
+    <h1 class="auth-page__title">Sign In</h1>
+    <p class="auth-page__sub">Access your AfriLoom account and order history.</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="field">
+        <label for="login-email">Email address</label>
+        <input id="login-email" type="email" formControlName="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="login-password">Password</label>
+        <input id="login-password" type="password" formControlName="password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+
+      @if (error) {
+        <p class="auth-page__error" role="alert">{{ error }}</p>
+      }
+
+      <button type="submit" class="btn-primary auth-page__submit" [disabled]="loading">
+        {{ loading ? 'Signing in…' : 'Sign In' }}
+      </button>
+    </form>
+
+    <p class="auth-page__switch">
+      Don't have an account? <a routerLink="/account/signup">Create one</a>
+    </p>
+    <p class="auth-page__guest">
+      <a routerLink="/shop">Continue browsing without an account →</a>
+    </p>
+  </div>
+</div>

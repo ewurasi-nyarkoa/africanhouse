@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TitleCasePipe } from '@angular/common';
-import { Subject } from 'rxjs';
+import { Subject, combineLatest } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CartService } from '../../core/services/cart.service';
 import { CartItem } from '../../core/models/order';
+import { PromotionService, ActivePromotion } from '../../core/services/promotion.service';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -16,22 +17,46 @@ import { Title } from '@angular/platform-browser';
 })
 export class CartComponent implements OnInit, OnDestroy {
   items: CartItem[] = [];
-  total = 0;
+  subtotal  = 0;
+  discount  = 0;
+  total     = 0;
+  promotion: ActivePromotion | null = null;
   private destroy$ = new Subject<void>();
 
   constructor(
     private cartService: CartService,
+    private promotionService: PromotionService,
     private cdr: ChangeDetectorRef,
     private title: Title
   ) {}
 
   ngOnInit(): void {
-    this.title.setTitle('Your Cart — African House');
-    this.cartService.cart$.pipe(takeUntil(this.destroy$)).subscribe(items => {
-      this.items = items;
-      this.total = items.reduce((sum, i) => sum + i.fabric.pricePerYard * i.yards, 0);
+    this.title.setTitle('Your Cart — AfriLoom Fabrics');
+
+    combineLatest([
+      this.cartService.cart$,
+      this.promotionService.activePromotion$,
+    ]).pipe(takeUntil(this.destroy$)).subscribe(([items, promo]) => {
+      this.items     = items;
+      this.promotion = promo;
+      this.subtotal  = items.reduce((sum, i) => sum + i.fabric.pricePerYard * i.yards, 0);
+      this.applyPromotion();
       this.cdr.markForCheck();
     });
+  }
+
+  private applyPromotion(): void {
+    if (!this.promotion || this.subtotal < this.promotion.minOrderAmount) {
+      this.discount = 0;
+      this.total    = this.subtotal;
+      return;
+    }
+    if (this.promotion.discountType === 'percentage') {
+      this.discount = Math.round(this.subtotal * this.promotion.discountValue / 100 * 100) / 100;
+    } else {
+      this.discount = Math.min(this.promotion.discountValue, this.subtotal);
+    }
+    this.total = Math.round((this.subtotal - this.discount) * 100) / 100;
   }
 
   canIncrement(item: CartItem): boolean {

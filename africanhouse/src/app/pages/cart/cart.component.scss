@@ -307,3 +307,17 @@
     }
   }
 }
+
+.summary__promo-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0.85rem;
+  background: rgba(80, 150, 80, 0.08);
+  border: 1px solid rgba(80, 150, 80, 0.2);
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #2a6a2a;
+  margin-bottom: 0.5rem;
+}

@@ -24,14 +24,16 @@ export class OrderTrackingComponent implements OnInit, OnDestroy {
   private realtimeChannel: any = null;
 
   steps: { value: OrderStatus; label: string; icon: string; description: string }[] = [
-    { value: 'pending', label: 'Order Placed', icon: '📝', description: 'We have received your order and are awaiting payment confirmation.' },
-    { value: 'payment_confirmed', label: 'Payment Confirmed', icon: '✅', description: 'Your payment has been confirmed. Thank you!' },
-    { value: 'packaging', label: 'Packaging', icon: '📦', description: 'Your fabric is being carefully packaged for delivery.' },
-    { value: 'out_for_delivery', label: 'Out for Delivery', icon: '🚚', description: 'Your order is on its way to you!' },
-    { value: 'delivered', label: 'Delivered', icon: '🎉', description: 'Your fabric has been delivered. Enjoy!' },
+    { value: 'pending',           label: 'Order Placed',       icon: '📝', description: 'We have received your order and are awaiting payment confirmation.' },
+    { value: 'payment_confirmed', label: 'Payment Confirmed',  icon: '✅', description: 'Your payment has been confirmed. Thank you!' },
+    { value: 'packaging',         label: 'Packaging',          icon: '📦', description: 'Your fabric is being carefully packaged for delivery.' },
+    { value: 'out_for_delivery',  label: 'Out for Delivery',   icon: '🚚', description: 'Your order is on its way to you!' },
+    { value: 'delivered',         label: 'Delivered',          icon: '🎉', description: 'Your fabric has been delivered. Enjoy!' },
   ];
 
-  private statusOrder: OrderStatus[] = ['pending', 'payment_confirmed', 'packaging', 'out_for_delivery', 'delivered'];
+  private statusOrder: OrderStatus[] = [
+    'pending', 'payment_confirmed', 'packaging', 'out_for_delivery', 'delivered'
+  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -41,7 +43,7 @@ export class OrderTrackingComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.title.setTitle('Track Your Order — African House');
+    this.title.setTitle('Track Your Order — AfriLoom Fabrics');
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if (params['id']) {
         this.orderId = params['id'];
@@ -56,18 +58,16 @@ export class OrderTrackingComponent implements OnInit, OnDestroy {
   }
 
   private async loadOrder(id: string): Promise<void> {
-    this.loading = true;
+    this.loading  = true;
     this.notFound = false;
-    this.order = null;
+    this.order    = null;
     this.cdr.markForCheck();
 
-    const { data } = await this.supabase.client
-      .from('orders')
-      .select('*')
-      .eq('id', id)
-      .single();
+    const { data, error } = await this.supabase.client.rpc('get_order_by_id', {
+      p_order_id: Number(id),
+    });
 
-    if (!data) {
+    if (error || !data) {
       this.notFound = true;
     } else {
       this.order = data;
@@ -87,16 +87,17 @@ export class OrderTrackingComponent implements OnInit, OnDestroy {
         event: 'UPDATE',
         schema: 'public',
         table: 'orders',
-        filter: `id=eq.${orderId}`
-      }, (payload: any) => {
-        this.order = payload.new;
-        this.cdr.markForCheck();
+        filter: `id=eq.${orderId}`,
+      }, async () => {
+        const { data } = await this.supabase.client.rpc('get_order_by_id', {
+          p_order_id: orderId,
+        });
+        if (data) {
+          this.order = data;
+          this.cdr.markForCheck();
+        }
       })
       .subscribe();
-  }
-
-  getStepIndex(status: OrderStatus): number {
-    return this.statusOrder.indexOf(status);
   }
 
   isStepDone(status: OrderStatus, stepValue: OrderStatus): boolean {

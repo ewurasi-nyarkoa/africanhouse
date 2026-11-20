@@ -3,15 +3,18 @@ import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { DecimalPipe } from '@angular/common';
 import { CartService } from '../../core/services/cart.service';
 import { CartItem } from '../../core/models/order';
 import { Title } from '@angular/platform-browser';
 import { SupabaseService } from '../../core/services/supabase.service';
 import { PaymentService } from '../../core/services/payment.service';
+import { PromotionService, ActivePromotion } from '../../core/services/promotion.service';
+import { CustomerAuthService } from '../../core/services/customer-auth.service';
 
 @Component({
   selector: 'app-checkout',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, DecimalPipe],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,11 +22,17 @@ import { PaymentService } from '../../core/services/payment.service';
 export class CheckoutComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   items: CartItem[] = [];
-  total = 0;
-  submitted = false;
-  placing = false;
+  subtotal    = 0;
+  discount    = 0;
+  finalTotal  = 0;
+  promotion: ActivePromotion | null = null;
+
+  submitted  = false;
+  placing    = false;
   orderError = '';
   orderId: number | null = null;
+  trackingToken = '';
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -31,6 +40,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private cartService: CartService,
     private supabase: SupabaseService,
     private paymentService: PaymentService,
+    private promotionService: PromotionService,
+    private customerAuth: CustomerAuthService,
     private router: Router,
     private cdr: ChangeDetectorRef,
     private title: Title,
@@ -46,10 +57,33 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     });
 
     this.cartService.cart$.pipe(takeUntil(this.destroy$)).subscribe(items => {
-      this.items = items;
-      this.total = items.reduce((sum, i) => sum + i.fabric.pricePerYard * i.yards, 0);
+      this.items    = items;
+      this.subtotal = items.reduce((sum, i) => sum + i.fabric.pricePerYard * i.yards, 0);
+      this.applyPromotion();
       this.cdr.markForCheck();
     });
+
+    this.promotionService.activePromotion$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(promo => {
+        this.promotion = promo;
+        this.applyPromotion();
+        this.cdr.markForCheck();
+      });
+  }
+
+  private applyPromotion(): void {
+    if (!this.promotion || this.subtotal < this.promotion.minOrderAmount) {
+      this.discount   = 0;
+      this.finalTotal = this.subtotal;
+      return;
+    }
+    if (this.promotion.discountType === 'percentage') {
+      this.discount = Math.round(this.subtotal * this.promotion.discountValue / 100 * 100) / 100;
+    } else {
+      this.discount = Math.min(this.promotion.discountValue, this.subtotal);
+    }
+    this.finalTotal = Math.round((this.subtotal - this.discount) * 100) / 100;
   }
 
   async onSubmit(): Promise<void> {
@@ -64,28 +98,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
     const { fullName, phone, location, deliveryNote } = this.form.value;
 
-    const fabricIds = this.items.map(i => Number(i.fabric.id));
-    const { data: freshFabrics } = await this.supabase.client
-      .from('fabrics')
-      .select('id, available_yards, min_yard, in_stock')
-      .in('id', fabricIds);
-
-    for (const item of this.items) {
-      const live = (freshFabrics ?? []).find((f: any) => String(f.id) === item.fabric.id);
-      if (!live || !live.in_stock || Number(live.available_yards) < item.yards) {
-        const available = live ? Number(live.available_yards) : 0;
-        this.orderError = `Only ${available} yard${available === 1 ? '' : 's'} are currently available for "${item.fabric.name}". Please update your cart before continuing.`;
-        this.placing = false;
-        this.cdr.markForCheck();
-        return;
-      }
-    }
-
+    // Open Paystack popup — amount is the server-calculated finalTotal
     let paystackReference: string;
     try {
       const result = await this.paymentService.openPaystack(
         `${phone}@africanhouse.com`,
-        this.total,
+        this.finalTotal,
         { customer_name: fullName, phone, location },
       );
       paystackReference = result.reference;
@@ -96,64 +114,34 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       return;
     }
 
-    for (const item of this.items) {
-      const { data: rpcData, error: rpcError } = await this.supabase.client.rpc(
-        'deduct_inventory',
-        { p_fabric_id: Number(item.fabric.id), p_yards: item.yards },
-      );
+    // Call the Edge Function — server verifies payment + creates order
+    const { data, error } = await this.supabase.client.functions.invoke('process-order', {
+      body: {
+        paystackReference,
+        customerName:  fullName,
+        customerPhone: phone,
+        location,
+        deliveryNote:  deliveryNote ?? '',
+        cartItems:     this.items.map(i => ({ fabricId: i.fabric.id, yards: i.yards })),
+        promotionId:   this.promotion?.id ?? null,
+        customerId:    this.customerAuth.currentUser?.id ?? null,
+      },
+    });
 
-      if (rpcError || rpcData?.success === false) {
-        const reason = rpcData?.message ?? rpcError?.message ?? 'Inventory error';
-        this.orderError = `Unable to complete your order: ${reason}. Please call us on 0240 070 628.`;
-        this.placing = false;
-        this.cdr.markForCheck();
-        return;
-      }
+    if (error || !data?.orderId) {
+      this.orderError = data?.error
+        ?? error?.message
+        ?? 'Something went wrong. Please contact us on 0240 070 628 with your payment reference.';
+      this.placing = false;
+      this.cdr.markForCheck();
+      return;
     }
 
-    const { data: costsData } = await this.supabase.client
-      .from('fabric_costs')
-      .select('fabric_id, full_piece_cost')
-      .in('fabric_id', fabricIds);
-
-    const costsMap = new Map<number, number>();
-    for (const row of costsData ?? []) {
-      costsMap.set(Number(row.fabric_id), Number(row.full_piece_cost ?? 0));
-    }
-
-    const { data, error } = await this.supabase.client.from('orders').insert({
-      customer_name:       fullName,
-      customer_phone:      phone,
-      location,
-      delivery_note:       deliveryNote,
-      paystack_reference:  paystackReference,
-      total_amount:        this.total,
-      status:              'payment_confirmed',
-      items: this.items.map(i => {
-        const fullPieceCost  = costsMap.get(Number(i.fabric.id)) ?? 0;
-        const costPerYardAtSale = fullPieceCost > 0 ? fullPieceCost / 12 : 0;
-        return {
-          fabric_id:            i.fabric.id,
-          fabric_name:          i.fabric.name,
-          image_url:            i.fabric.imageUrl,
-          material:             i.fabric.material,
-          category:             i.fabric.category,
-          yards:                i.yards,
-          price_per_yard:       i.fabric.pricePerYard,
-          subtotal:             i.fabric.pricePerYard * i.yards,
-          cost_per_yard_at_sale: costPerYardAtSale,
-        };
-      }),
-    }).select('id').single();
-
-    if (error) {
-      this.orderError = 'Something went wrong saving your order. Please call us on 0240 070 628.';
-    } else {
-      this.orderId = data.id;
-      this.submitted = true;
-      this.cartService.clearCart();
-      this.router.navigate(['/track', data.id]);
-    }
+    this.orderId       = data.orderId;
+    this.trackingToken = data.trackingToken;
+    this.submitted     = true;
+    this.cartService.clearCart();
+    this.router.navigate(['/track', data.orderId]);
 
     this.placing = false;
     this.cdr.markForCheck();

@@ -9,6 +9,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { DecimalPipe, TitleCasePipe } from '@angular/common';
 import { SupabaseService } from '../../../core/services/supabase.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { FabricService } from '../../../core/services/fabric.service';
 import {
   getSubcategoriesForCategory,
   SubcategoryOption,
@@ -60,6 +61,7 @@ export class FabricsComponent implements OnInit {
     private fb: FormBuilder,
     private supabase: SupabaseService,
     private auth: AuthService,
+    private fabricService: FabricService,
     private cdr: ChangeDetectorRef
   ) {
     this.form = this.fb.group({
@@ -261,6 +263,7 @@ export class FabricsComponent implements OnInit {
       this.uploadFile = null;
       this.form.reset({ category: 'everyday', subcategory: '', material: 'gtp', in_stock: true, min_yards: 4, available_yards: 0, full_piece_cost: 0 });
       this.updateSubcategoryOptions('everyday');
+      this.fabricService.invalidateCache();
       await this.loadFabrics();
     } else {
       this.saving = false;
@@ -304,6 +307,7 @@ export class FabricsComponent implements OnInit {
   async deleteFabric(id: number): Promise<void> {
     if (!confirm('Delete this fabric? This cannot be undone.')) return;
     await this.supabase.client.from('fabrics').delete().eq('id', id);
+    this.fabricService.invalidateCache();
     await this.loadFabrics();
   }
 

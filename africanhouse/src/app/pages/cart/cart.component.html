@@ -59,6 +59,13 @@
             }
           </div>
 
+          @if (discount > 0 && promotion) {
+            <div class="summary__promo-banner">
+              <span>🎉 {{ promotion.name }}</span>
+              <span>− GH₵ {{ discount }}</span>
+            </div>
+          }
+
           <div class="summary__delivery">
             <span>Delivery</span>
             <span class="summary__delivery-note">Calculated at checkout</span>

@@ -1,0 +1,39 @@
+<div class="auth-page">
+  <div class="auth-page__box">
+    <h1 class="auth-page__title">Create Account</h1>
+    <p class="auth-page__sub">Save your details and track all your orders in one place.</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="field">
+        <label for="signup-name">Full Name</label>
+        <input id="signup-name" type="text" formControlName="fullName" placeholder="e.g. Akosua Mensah" autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for="signup-email">Email address</label>
+        <input id="signup-email" type="email" formControlName="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="signup-password">Password</label>
+        <input id="signup-password" type="password" formControlName="password" placeholder="At least 6 characters" autocomplete="new-password" />
+      </div>
+
+      @if (error) {
+        <p class="auth-page__error" role="alert">{{ error }}</p>
+      }
+      @if (success) {
+        <p class="auth-page__success" role="status">{{ success }}</p>
+      }
+
+      <button type="submit" class="btn-primary auth-page__submit" [disabled]="loading || !!success">
+        {{ loading ? 'Creating account…' : 'Create Account' }}
+      </button>
+    </form>
+
+    <p class="auth-page__switch">
+      Already have an account? <a routerLink="/account/login">Sign in</a>
+    </p>
+    <p class="auth-page__guest">
+      <a routerLink="/shop">Continue browsing without an account →</a>
+    </p>
+  </div>
+</div>

@@ -1,0 +1,87 @@
+<div class="account">
+  <div class="container">
+
+    <header class="account__header">
+      <div>
+        <h1 class="account__title">My Account</h1>
+        <p class="account__email">{{ user?.email }}</p>
+      </div>
+      <button class="btn-outline account__signout" (click)="signOut()">Sign Out</button>
+    </header>
+
+    <div class="account__grid">
+
+      <!-- PROFILE CARD -->
+      <div class="account__card">
+        <h2 class="account__card-heading">Profile</h2>
+        @if (profile) {
+          <div class="account__info">
+            @if (profile.full_name) {
+              <div class="account__info-row">
+                <span>Name</span><strong>{{ profile.full_name }}</strong>
+              </div>
+            }
+            @if (profile.phone) {
+              <div class="account__info-row">
+                <span>Phone</span><strong>{{ profile.phone }}</strong>
+              </div>
+            }
+            @if (profile.location) {
+              <div class="account__info-row">
+                <span>Default Delivery</span><strong>{{ profile.location }}</strong>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="account__empty">No profile information saved yet.</p>
+        }
+        <a routerLink="/account/profile" class="account__link">Edit profile →</a>
+      </div>
+
+      <!-- QUICK LINKS -->
+      <div class="account__card">
+        <h2 class="account__card-heading">Quick Links</h2>
+        <ul class="account__links">
+          <li><a routerLink="/shop">Browse Fabrics</a></li>
+          <li><a routerLink="/track">Track an Order</a></li>
+          <li><a routerLink="/cart">View Cart</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- ORDER HISTORY -->
+    <div class="account__orders">
+      <h2 class="account__section-heading">My Orders</h2>
+
+      @if (loadingOrders) {
+        <p class="account__loading">Loading orders…</p>
+      } @else if (orders.length === 0) {
+        <div class="account__empty-orders">
+          <p>You haven't placed any orders yet.</p>
+          <a routerLink="/shop" class="btn-primary">Start Shopping</a>
+        </div>
+      } @else {
+        <div class="account__order-list">
+          @for (order of orders; track order.id) {
+            <div class="account__order-row">
+              <div class="account__order-info">
+                <p class="account__order-id">#{{ order.id }}</p>
+                <p class="account__order-date">{{ order.created_at | date:'dd MMM yyyy' }}</p>
+              </div>
+              <div class="account__order-meta">
+                <p class="account__order-items">{{ order.item_count }} item{{ order.item_count !== 1 ? 's' : '' }}</p>
+                <p class="account__order-amount">GH₵ {{ order.total_amount }}</p>
+              </div>
+              <span [class]="'status-badge status-badge--' + order.status">
+                {{ getStatusLabel(order.status) }}
+              </span>
+              <a [routerLink]="['/track', order.id]" class="account__order-track">Track →</a>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

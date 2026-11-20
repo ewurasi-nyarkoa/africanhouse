@@ -44,6 +44,23 @@
           </a>
         </li>
 
+        <!-- Account icon -->
+        <li>
+          <a [routerLink]="(customerAuth.user$ | async) ? '/account' : '/account/login'"
+             routerLinkActive="active"
+             class="navbar__icon-link"
+             (click)="menuOpen=false"
+             [attr.aria-label]="(customerAuth.user$ | async) ? 'My Account' : 'Sign In'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </a>
+        </li>
+
         <!-- Cart — bag SVG -->
         <li>
           <a routerLink="/cart"
@@ -90,6 +107,13 @@
     <li><a routerLink="/"    routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="menuOpen=false">Home</a></li>
     <li><a routerLink="/shop"  routerLinkActive="active" (click)="menuOpen=false">Shop</a></li>
     <li><a routerLink="/track" routerLinkActive="active" (click)="menuOpen=false">Track Order</a></li>
+    <li>
+      <a [routerLink]="(customerAuth.user$ | async) ? '/account' : '/account/login'"
+         routerLinkActive="active"
+         (click)="menuOpen=false">
+        {{ (customerAuth.user$ | async) ? 'My Account' : 'Sign In' }}
+      </a>
+    </li>
     <li><a routerLink="/cart"  routerLinkActive="active" (click)="menuOpen=false">Cart
       @if ((cartCount$ | async)! > 0) {
         <span class="cart-badge cart-badge--inline">{{ cartCount$ | async }}</span>

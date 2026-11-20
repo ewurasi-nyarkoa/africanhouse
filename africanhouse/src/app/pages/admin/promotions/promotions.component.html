@@ -1,0 +1,176 @@
+<div class="admin" [class.menu-open]="menuOpen">
+
+  <!-- DESKTOP SIDEBAR -->
+  <aside class="admin__sidebar">
+    <div class="admin__sidebar-brand">
+      <span class="admin__sidebar-logo">AfriLoom</span>
+      <span class="admin__sidebar-label">Admin Panel</span>
+    </div>
+    <nav class="admin__nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="admin__nav-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a routerLink="/admin/fabrics" routerLinkActive="active" class="admin__nav-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+        Fabrics
+      </a>
+      <a routerLink="/admin/orders" routerLinkActive="active" class="admin__nav-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        Orders
+      </a>
+      <a routerLink="/admin/promotions" routerLinkActive="active" class="admin__nav-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Promotions
+      </a>
+    </nav>
+    <div class="admin__sidebar-footer">
+      <a routerLink="/" class="admin__view-site">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        View Site
+      </a>
+      <button (click)="logout()" class="admin__logout">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MOBILE TOP BAR -->
+  <div class="admin__mobile-topbar">
+    <span class="admin__mobile-logo">AfriLoom</span>
+    <button class="admin__mobile-burger" [class.is-open]="menuOpen" (click)="menuOpen=!menuOpen" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <!-- MOBILE SLIDE-IN MENU -->
+  <div class="admin__mobile-menu" [class.open]="menuOpen">
+    <div class="admin__sidebar-brand">
+      <span class="admin__sidebar-logo">AfriLoom</span>
+      <span class="admin__sidebar-label">Admin Panel</span>
+    </div>
+    <nav class="admin__nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="admin__nav-link" (click)="menuOpen=false">Dashboard</a>
+      <a routerLink="/admin/fabrics"   routerLinkActive="active" class="admin__nav-link" (click)="menuOpen=false">Fabrics</a>
+      <a routerLink="/admin/orders"    routerLinkActive="active" class="admin__nav-link" (click)="menuOpen=false">Orders</a>
+      <a routerLink="/admin/promotions" routerLinkActive="active" class="admin__nav-link" (click)="menuOpen=false">Promotions</a>
+    </nav>
+    <div class="admin__sidebar-footer">
+      <a routerLink="/" class="admin__view-site" (click)="menuOpen=false">View Site</a>
+      <button (click)="logout()" class="admin__logout">Sign Out</button>
+    </div>
+  </div>
+
+  @if (menuOpen) {
+    <div class="admin__overlay" (click)="menuOpen=false" aria-hidden="true"></div>
+  }
+
+  <!-- MAIN CONTENT -->
+  <main class="admin__main">
+
+    <div class="admin__top">
+      <div>
+        <span class="admin__page-eyebrow">Marketing</span>
+        <h1 class="admin__page-title">Promotions</h1>
+        <p class="admin__page-subtitle">Create and manage discount promotions for your customers.</p>
+      </div>
+      <button class="btn-primary" (click)="showForm=!showForm">
+        {{ showForm ? 'Close' : '+ New Promotion' }}
+      </button>
+    </div>
+
+    <!-- FORM -->
+    @if (showForm) {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="fabric-form" novalidate>
+        <h2>{{ editingId ? 'Edit Promotion' : 'New Promotion' }}</h2>
+
+        <p class="form-section-label">Promotion Details</p>
+        <div class="form-grid">
+          <div class="field">
+            <label for="promo-name">Promotion Name</label>
+            <input id="promo-name" type="text" formControlName="name" placeholder="e.g. AfriLoom Launch Offer" />
+          </div>
+          <div class="field">
+            <label for="promo-type">Discount Type</label>
+            <select id="promo-type" formControlName="discount_type">
+              <option value="percentage">Percentage (%)</option>
+              <option value="fixed">Fixed Amount (GH₵)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="promo-value">Discount Value</label>
+            <input id="promo-value" type="number" formControlName="discount_value" min="0.01" step="0.01" />
+            <p class="field__hint">
+              {{ form.get('discount_type')?.value === 'percentage' ? 'e.g. 5 = 5% off' : 'Amount in GH₵ e.g. 10' }}
+            </p>
+          </div>
+          <div class="field">
+            <label for="promo-min">Minimum Order Amount (GH₵)</label>
+            <input id="promo-min" type="number" formControlName="min_order_amount" min="0" />
+            <p class="field__hint">Leave 0 for no minimum.</p>
+          </div>
+          <div class="field">
+            <label for="promo-start">Start Date &amp; Time</label>
+            <input id="promo-start" type="datetime-local" formControlName="starts_at" />
+          </div>
+          <div class="field">
+            <label for="promo-end">End Date &amp; Time</label>
+            <input id="promo-end" type="datetime-local" formControlName="ends_at" />
+          </div>
+        </div>
+
+        <div class="field" style="margin-bottom:1rem;">
+          <label for="promo-desc">Description (optional)</label>
+          <input id="promo-desc" type="text" formControlName="description" placeholder="Short description shown to customers" />
+        </div>
+
+        <div class="field field--check" style="margin-bottom:1rem;">
+          <label>
+            <input type="checkbox" formControlName="active" />
+            Active — customers will see this promotion at checkout
+          </label>
+        </div>
+
+        @if (error) {
+          <p class="form-error" role="alert">{{ error }}</p>
+        }
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="saving">
+            {{ saving ? 'Saving…' : editingId ? 'Update Promotion' : 'Create Promotion' }}
+          </button>
+          <button type="button" class="btn-outline" (click)="cancelForm()">Cancel</button>
+        </div>
+      </form>
+    }
+
+    <!-- PROMOTIONS LIST -->
+    @if (loading) {
+      <p class="admin__loading">Loading promotions…</p>
+    } @else if (promotions.length === 0) {
+      <p class="admin__empty">No promotions yet. Create your first promotion above.</p>
+    } @else {
+      <div class="fabric-list">
+        @for (p of promotions; track p.id) {
+          <div class="fabric-row" style="grid-template-columns: 1fr auto auto auto;">
+            <div class="fabric-row__info">
+              <p class="fabric-row__name">{{ p.name }}</p>
+              <p class="fabric-row__sub">
+                {{ p.discount_type === 'percentage' ? p.discount_value + '% off' : 'GH₵' + p.discount_value + ' off' }}
+                @if (p.min_order_amount > 0) { · Min GH₵{{ p.min_order_amount }} }
+                · {{ p.starts_at | date:'dd MMM yyyy' }} → {{ p.ends_at | date:'dd MMM yyyy' }}
+              </p>
+            </div>
+            <span [class]="p.active ? 'status-badge status-badge--in-stock' : 'status-badge status-badge--sold-out'">
+              {{ p.active ? 'Active' : 'Inactive' }}
+            </span>
+            <button class="fabric-row__edit-btn" (click)="edit(p)">Edit</button>
+            <button class="fabric-row__delete-btn" (click)="deletePromotion(p.id)" [attr.aria-label]="'Delete ' + p.name">Delete</button>
+          </div>
+        }
+      </div>
+    }
+
+  </main>
+</div>
