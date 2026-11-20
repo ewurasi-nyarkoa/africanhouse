@@ -15,6 +15,7 @@ export const routes: Routes = [
   { path: 'account/login',  loadComponent: () => import('./pages/account/login/account-login.component').then(m => m.AccountLoginComponent) },
   { path: 'account/signup', loadComponent: () => import('./pages/account/signup/account-signup.component').then(m => m.AccountSignupComponent) },
   { path: 'account', loadComponent: () => import('./pages/account/dashboard/account-dashboard.component').then(m => m.AccountDashboardComponent), canActivate: [customerAuthGuard] },
+  { path: 'account/profile', loadComponent: () => import('./pages/account/profile/account-profile.component').then(m => m.AccountProfileComponent), canActivate: [customerAuthGuard] },
 
   // Admin routes
   { path: 'admin/login', loadComponent: () => import('./pages/admin/login/login.component').then(m => m.LoginComponent) },

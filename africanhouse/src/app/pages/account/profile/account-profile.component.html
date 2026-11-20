@@ -1,0 +1,42 @@
+<div class="profile-page">
+  <div class="container">
+
+    <header class="profile-page__header">
+      <h1 class="profile-page__title">Edit Profile</h1>
+      <a routerLink="/account" class="profile-page__back">← Back to Account</a>
+    </header>
+
+    <div class="profile-page__card">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="field">
+          <label for="profile-name">Full Name</label>
+          <input id="profile-name" type="text" formControlName="full_name" placeholder="e.g. Akosua Mensah" />
+        </div>
+        <div class="field">
+          <label for="profile-phone">Phone Number</label>
+          <input id="profile-phone" type="tel" formControlName="phone" placeholder="e.g. 0244000000" />
+          <p class="field__hint">For faster checkout — saved automatically.</p>
+        </div>
+        <div class="field">
+          <label for="profile-location">Default Delivery Location</label>
+          <input id="profile-location" type="text" formControlName="location" placeholder="e.g. Accra, Kumasi..." />
+        </div>
+
+        @if (error) {
+          <p class="profile-page__error" role="alert">{{ error }}</p>
+        }
+        @if (saved) {
+          <p class="profile-page__saved" role="status">Profile saved successfully.</p>
+        }
+
+        <div class="profile-page__actions">
+          <button type="submit" class="btn-primary" [disabled]="saving">
+            {{ saving ? 'Saving…' : 'Save Changes' }}
+          </button>
+          <a routerLink="/account" class="btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
