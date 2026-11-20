@@ -1,42 +1,61 @@
 <div class="profile-page">
   <div class="container">
 
-    <header class="profile-page__header">
-      <h1 class="profile-page__title">Edit Profile</h1>
-      <a routerLink="/account" class="profile-page__back">← Back to Account</a>
-    </header>
-
-    <div class="profile-page__card">
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-        <div class="field">
-          <label for="profile-name">Full Name</label>
-          <input id="profile-name" type="text" formControlName="full_name" placeholder="e.g. Akosua Mensah" />
-        </div>
-        <div class="field">
-          <label for="profile-phone">Phone Number</label>
-          <input id="profile-phone" type="tel" formControlName="phone" placeholder="e.g. 0244000000" />
-          <p class="field__hint">For faster checkout — saved automatically.</p>
-        </div>
-        <div class="field">
-          <label for="profile-location">Default Delivery Location</label>
-          <input id="profile-location" type="text" formControlName="location" placeholder="e.g. Accra, Kumasi..." />
-        </div>
-
-        @if (error) {
-          <p class="profile-page__error" role="alert">{{ error }}</p>
-        }
-        @if (saved) {
-          <p class="profile-page__saved" role="status">Profile saved successfully.</p>
-        }
-
-        <div class="profile-page__actions">
-          <button type="submit" class="btn-primary" [disabled]="saving">
-            {{ saving ? 'Saving…' : 'Save Changes' }}
-          </button>
-          <a routerLink="/account" class="btn-outline">Cancel</a>
-        </div>
-      </form>
+    <div class="profile-page__breadcrumb">
+      <a routerLink="/account">← My Account</a>
     </div>
 
+    <h1 class="profile-page__title">Edit Profile</h1>
+    <p class="profile-page__sub">Your details are saved securely and used to speed up checkout.</p>
+
+    <div class="profile-page__layout">
+
+      <div class="profile-page__card">
+        <div class="profile-page__card-header">
+          <h2>Personal Information</h2>
+        </div>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+          <div class="profile-page__field">
+            <label for="profile-name">Full Name</label>
+            <input id="profile-name" type="text" formControlName="full_name" placeholder="e.g. Akosua Mensah" />
+          </div>
+          <div class="profile-page__field">
+            <label for="profile-phone">Phone Number</label>
+            <input id="profile-phone" type="tel" formControlName="phone" placeholder="e.g. 0244000000" />
+            <p class="profile-page__hint">Used for delivery contact and faster checkout.</p>
+          </div>
+          <div class="profile-page__field">
+            <label for="profile-location">Default Delivery Location</label>
+            <input id="profile-location" type="text" formControlName="location" placeholder="e.g. Accra, Kumasi, Takoradi..." />
+          </div>
+
+          @if (error) {
+            <p class="profile-page__error" role="alert">{{ error }}</p>
+          }
+          @if (saved) {
+            <p class="profile-page__saved" role="status">✓ Profile saved successfully.</p>
+          }
+
+          <div class="profile-page__actions">
+            <button type="submit" class="btn-primary" [disabled]="saving">
+              {{ saving ? 'Saving…' : 'Save Changes' }}
+            </button>
+            <a routerLink="/account" class="btn-outline">Cancel</a>
+          </div>
+        </form>
+      </div>
+
+      <div class="profile-page__side">
+        <div class="profile-page__card profile-page__card--info">
+          <h2>Why save your details?</h2>
+          <ul>
+            <li><strong>Faster checkout</strong> — your name, phone, and delivery location are pre-filled automatically.</li>
+            <li><strong>Order history</strong> — view all your past and current orders in one place.</li>
+            <li><strong>Easy tracking</strong> — jump straight to any order's tracking page from your account.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>

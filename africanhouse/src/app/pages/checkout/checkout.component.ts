@@ -47,7 +47,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private title: Title,
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.title.setTitle('Checkout — AfriLoom Fabrics');
     this.form = this.fb.group({
       fullName:     ['', [Validators.required, Validators.minLength(2)]],
@@ -70,6 +70,26 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         this.applyPromotion();
         this.cdr.markForCheck();
       });
+
+    const user = this.customerAuth.currentUser;
+    if (user) {
+      const { data: profile } = await this.supabase.client
+        .from('customer_profiles')
+        .select('full_name, phone, location')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (profile) {
+        this.form.patchValue({
+          fullName:  profile.full_name ?? '',
+          phone:     profile.phone ?? '',
+          location: profile.location ?? '',
+        });
+      } else {
+        this.form.patchValue({ fullName: user.user_metadata?.['full_name'] ?? '' });
+      }
+      this.cdr.markForCheck();
+    }
   }
 
   private applyPromotion(): void {

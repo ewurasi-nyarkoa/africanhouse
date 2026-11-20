@@ -28,7 +28,7 @@ export class AccountSignupComponent {
 
   constructor(
     private fb: FormBuilder,
-    private customerAuth: CustomerAuthService,
+    public customerAuth: CustomerAuthService,
     private router: Router,
     private cdr: ChangeDetectorRef,
     title: Title,

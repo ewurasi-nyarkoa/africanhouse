@@ -47,6 +47,19 @@ export class CustomerAuthService {
     return null;
   }
 
+  async signInWithGoogle(): Promise<void> {
+    await this.supabase.client.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/account' },
+    });
+  }
+
+  get userDisplayName(): string {
+    const user = this.currentUser;
+    if (!user) return '';
+    return user.user_metadata?.['full_name'] ?? user.email?.split('@')[0] ?? 'Account';
+  }
+
   async signOut(): Promise<void> {
     await this.supabase.client.auth.signOut();
     this.router.navigate(['/account/login']);
