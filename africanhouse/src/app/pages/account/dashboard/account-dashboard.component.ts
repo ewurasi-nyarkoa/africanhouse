@@ -7,6 +7,8 @@ import { CustomerAuthService } from '../../../core/services/customer-auth.servic
 import { SupabaseService } from '../../../core/services/supabase.service';
 import { Title } from '@angular/platform-browser';
 
+type OrderTab = 'active' | 'history';
+
 @Component({
   selector: 'app-account-dashboard',
   imports: [RouterLink, DatePipe],
@@ -18,9 +20,22 @@ export class AccountDashboardComponent implements OnInit, OnDestroy {
   profile: any = null;
   orders: any[] = [];
   loadingOrders = true;
+  activeTab: OrderTab = 'active';
   private destroy$ = new Subject<void>();
 
   get user() { return this.customerAuth.currentUser; }
+
+  get activeOrders(): any[] {
+    return this.orders.filter(o => o.status !== 'delivered');
+  }
+
+  get historyOrders(): any[] {
+    return this.orders.filter(o => o.status === 'delivered');
+  }
+
+  get displayedOrders(): any[] {
+    return this.activeTab === 'active' ? this.activeOrders : this.historyOrders;
+  }
 
   constructor(
     public customerAuth: CustomerAuthService,
@@ -44,9 +59,14 @@ export class AccountDashboardComponent implements OnInit, OnDestroy {
       this.supabase.client.rpc('get_my_orders'),
     ]);
 
-    this.profile      = profileRes.data;
-    this.orders       = ordersRes.data ?? [];
+    this.profile       = profileRes.data;
+    this.orders        = ordersRes.data ?? [];
     this.loadingOrders = false;
+    this.cdr.markForCheck();
+  }
+
+  setTab(tab: OrderTab): void {
+    this.activeTab = tab;
     this.cdr.markForCheck();
   }
 

@@ -52,18 +52,47 @@
 
     <!-- ORDER HISTORY -->
     <div class="account__orders">
-      <h2 class="account__section-heading">My Orders</h2>
+
+      <div class="account__orders-header">
+        <h2 class="account__section-heading">My Orders</h2>
+        <div class="account__tabs" role="tablist">
+          <button
+            role="tab"
+            [class.active]="activeTab === 'active'"
+            [attr.aria-selected]="activeTab === 'active'"
+            (click)="setTab('active')">
+            Active
+            @if (activeOrders.length > 0) {
+              <span class="account__tab-count">{{ activeOrders.length }}</span>
+            }
+          </button>
+          <button
+            role="tab"
+            [class.active]="activeTab === 'history'"
+            [attr.aria-selected]="activeTab === 'history'"
+            (click)="setTab('history')">
+            Purchase History
+            @if (historyOrders.length > 0) {
+              <span class="account__tab-count">{{ historyOrders.length }}</span>
+            }
+          </button>
+        </div>
+      </div>
 
       @if (loadingOrders) {
         <p class="account__loading">Loading orders…</p>
-      } @else if (orders.length === 0) {
+      } @else if (displayedOrders.length === 0) {
         <div class="account__empty-orders">
-          <p>You haven't placed any orders yet.</p>
-          <a routerLink="/shop" class="btn-primary">Start Shopping</a>
+          @if (activeTab === 'active') {
+            <p>No active orders right now.</p>
+            <a routerLink="/shop" class="btn-primary">Start Shopping</a>
+          } @else {
+            <p>No completed orders yet.</p>
+          }
         </div>
       } @else {
         <div class="account__order-list">
-          @for (order of orders; track order.id) {
+          @for (order of displayedOrders; track order.id) {
             <div class="account__order-row">
               <div class="account__order-info">
                 <p class="account__order-id">#{{ order.id }}</p>
@@ -76,7 +105,9 @@
               <span [class]="'status-badge status-badge--' + order.status">
                 {{ getStatusLabel(order.status) }}
               </span>
-              <a [routerLink]="['/track', order.id]" class="account__order-track">Track →</a>
+              <a [routerLink]="['/track', order.id]" class="account__order-track">
+                {{ order.status === 'delivered' ? 'View' : 'Track' }} →
+              </a>
             </div>
           }
         </div>
