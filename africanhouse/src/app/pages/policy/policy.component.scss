@@ -1,0 +1,155 @@
+.policy {
+  background: var(--ivory);
+  padding: 4rem 1.5rem 6rem;
+  min-height: calc(100vh - var(--nav-height));
+
+  &__header {
+    max-width: 760px;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--light-grey);
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--charcoal);
+    margin-bottom: 0.5rem;
+  }
+
+  &__brand {
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    margin-bottom: 0.4rem;
+  }
+
+  &__date {
+    font-size: 0.78rem;
+    color: var(--grey);
+  }
+
+  &__intro {
+    max-width: 760px;
+    margin-bottom: 2.5rem;
+
+    p {
+      font-size: 1rem;
+      color: var(--charcoal);
+      line-height: 1.8;
+    }
+  }
+
+  &__sections {
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  &__section {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--light-grey);
+
+    h2 {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--burgundy);
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: var(--charcoal);
+      line-height: 1.85;
+      margin-bottom: 0.85rem;
+
+      &:last-child { margin-bottom: 0; }
+
+      strong { font-weight: 600; }
+    }
+
+    ul {
+      margin: 0.75rem 0 0.75rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+
+      li {
+        font-size: 0.9rem;
+        color: var(--charcoal);
+        line-height: 1.7;
+        list-style: disc;
+      }
+    }
+  }
+
+  &__contact {
+    list-style: none !important;
+    margin-left: 0 !important;
+
+    li {
+      list-style: none !important;
+      display: flex;
+      gap: 1rem;
+      align-items: baseline;
+
+      span {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--grey);
+        min-width: 80px;
+        flex-shrink: 0;
+      }
+
+      a {
+        color: var(--charcoal);
+        font-weight: 500;
+        transition: color var(--ease);
+        &:hover { color: var(--burgundy); }
+      }
+    }
+  }
+
+  &__promise {
+    max-width: 760px;
+    padding: 2.5rem 2rem;
+    margin-top: 2.5rem;
+    background: var(--white);
+    border: 1px solid var(--light-grey);
+    border-left: 3px solid var(--burgundy);
+  }
+
+  &__promise-text {
+    font-size: 0.9rem;
+    color: var(--charcoal);
+    line-height: 1.85;
+    margin-bottom: 0.75rem;
+  }
+
+  &__promise-brand {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--burgundy);
+    em { font-style: italic; }
+  }
+
+  &__back {
+    max-width: 760px;
+    margin-top: 2.5rem;
+
+    .btn-primary {
+      display: inline-flex;
+      font-size: 0.8rem;
+    }
+  }
+}

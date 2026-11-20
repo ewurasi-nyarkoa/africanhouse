@@ -10,6 +10,7 @@ export const routes: Routes = [
   { path: 'checkout', loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent) },
   { path: 'track', loadComponent: () => import('./pages/order-tracking/order-tracking.component').then(m => m.OrderTrackingComponent) },
   { path: 'track/:id', loadComponent: () => import('./pages/order-tracking/order-tracking.component').then(m => m.OrderTrackingComponent) },
+  { path: 'policy', loadComponent: () => import('./pages/policy/policy.component').then(m => m.PolicyComponent) },
 
   // Customer account routes
   { path: 'account/login',  loadComponent: () => import('./pages/account/login/account-login.component').then(m => m.AccountLoginComponent) },

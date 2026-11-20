@@ -207,6 +207,14 @@
     }
   }
 
+  &__policy-link {
+    font-size: 0.72rem;
+    color: #3E3830;
+    letter-spacing: 0.04em;
+    transition: color var(--ease);
+    &:hover { color: #A89880; }
+  }
+
   &__bottom-tagline {
     font-family: var(--font-display);
     font-style: italic;
