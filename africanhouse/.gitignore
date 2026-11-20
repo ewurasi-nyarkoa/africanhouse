@@ -48,3 +48,6 @@ src/environments/environment.prod.ts
 # Supabase Edge Function secrets
 supabase/.env
 supabase/functions/.env
+
+# Supabase CLI temp/cache files
+supabase/.temp/
