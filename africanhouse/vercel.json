@@ -1,0 +1,7 @@
+{
+  "buildCommand": "npm install && npx ng build --configuration production",
+  "outputDirectory": "dist/africanhouse/browser",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
