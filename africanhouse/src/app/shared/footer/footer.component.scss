@@ -62,6 +62,35 @@
     }
   }
 
+  &__social {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-top: 1.25rem;
+  }
+
+  &__social-link {
+    width: 34px;
+    height: 34px;
+    border: 1px solid #3A3530;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #A89880;
+    transition: border-color var(--ease), color var(--ease);
+
+    &:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+  }
+
   /* ── Column headings ── */
   &__col-heading {
     font-family: var(--font-body);
