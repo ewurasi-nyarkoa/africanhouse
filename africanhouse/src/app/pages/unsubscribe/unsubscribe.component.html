@@ -1,0 +1,38 @@
+<div class="unsub-page">
+  <div class="container">
+    <div class="unsub-page__box">
+      <p class="unsub-page__brand">AfriLoom Fabrics</p>
+
+      @if (state === 'loading') {
+        <p class="unsub-page__message">Processing your request…</p>
+      }
+
+      @if (state === 'success') {
+        <div class="unsub-page__icon unsub-page__icon--success" aria-hidden="true">✓</div>
+        <h1 class="unsub-page__title">You've been unsubscribed.</h1>
+        <p class="unsub-page__message">
+          You won't receive any more marketing emails from AfriLoom Fabrics.
+          You'll still receive emails related to your orders.
+        </p>
+      }
+
+      @if (state === 'already') {
+        <h1 class="unsub-page__title">Already unsubscribed.</h1>
+        <p class="unsub-page__message">
+          This email address is already unsubscribed from our marketing list.
+        </p>
+      }
+
+      @if (state === 'error') {
+        <h1 class="unsub-page__title">Link not found.</h1>
+        <p class="unsub-page__message">
+          This unsubscribe link is invalid or has expired.
+          If you'd like to stop receiving emails, please contact us on
+          <a href="https://wa.me/233240070628">0240 070 628</a>.
+        </p>
+      }
+
+      <a routerLink="/" class="unsub-page__home">← Back to AfriLoom Fabrics</a>
+    </div>
+  </div>
+</div>

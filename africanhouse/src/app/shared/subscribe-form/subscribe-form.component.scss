@@ -49,10 +49,11 @@
   }
 
   &__form {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 0;
 
-    input {
+    input[type="email"] {
       flex: 1;
       padding: 0.85rem 1.1rem;
       border: 1px solid #3A3530;
@@ -81,6 +82,31 @@
       font-size: 0.75rem;
       letter-spacing: 0.12em;
       white-space: nowrap;
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+      }
+    }
+  }
+
+  &__consent {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.85rem 0;
+    color: #A89880;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    cursor: pointer;
+
+    input {
+      flex: 0 0 auto;
+      width: 1rem;
+      height: 1rem;
+      margin: 0.1rem 0 0;
+      accent-color: var(--gold);
     }
   }
 
@@ -118,14 +144,15 @@
     padding: 4rem 1.5rem;
 
     &__form {
-      flex-direction: column;
+      grid-template-columns: 1fr;
 
-      input {
+      input[type="email"] {
         border-right: 1px solid #3A3530;
         border-bottom: none;
       }
 
       button.btn-primary {
+        grid-column: 1;
         width: 100%;
         padding: 0.85rem 1rem;
       }

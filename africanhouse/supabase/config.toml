@@ -1,0 +1,19 @@
+project_id = "qcmjoqlggctjdyhfooer"
+
+[functions.subscribe]
+verify_jwt = false
+
+[functions.send-campaign]
+verify_jwt = true
+
+[functions.send-welcome-email]
+verify_jwt = true
+
+[functions.send-order-confirmation]
+verify_jwt = false
+
+[functions.process-order]
+verify_jwt = false
+
+[functions.resend-webhook]
+verify_jwt = false

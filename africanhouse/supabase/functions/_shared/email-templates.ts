@@ -1,3 +1,6 @@
+import { sanitizeCampaignHtml } from './email-sanitizer.ts';
+import { escapeHtml, safeHttpsUrl } from './escape-html.ts';
+
 const BRAND = {
   name:      'AfriLoom Fabrics',
   tagline:   'Every Fabric Tells a Story.',
@@ -15,7 +18,7 @@ const BRAND = {
 function baseLayout(content: string, unsubscribeUrl?: string): string {
   const footer = unsubscribeUrl
     ? `<p style="margin:0 0 8px;">
-         <a href="${unsubscribeUrl}" style="color:#9b8b7a;font-size:12px;">Unsubscribe from marketing emails</a>
+         <a href="${safeHttpsUrl(unsubscribeUrl)}" style="color:#9b8b7a;font-size:12px;">Unsubscribe from marketing emails</a>
        </p>`
     : '';
 
@@ -63,10 +66,10 @@ function baseLayout(content: string, unsubscribeUrl?: string): string {
 </html>`;
 }
 
-export function welcomeEmail(firstName: string): string {
+export function welcomeEmail(firstName: string, unsubscribeUrl?: string): string {
   const content = `
     <h1 style="margin:0 0 16px;font-family:Georgia,serif;font-size:28px;font-style:italic;font-weight:400;color:${BRAND.charcoal};">
-      Welcome, ${firstName}.
+      Welcome, ${escapeHtml(firstName)}.
     </h1>
     <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#4a4a4a;">
       Thank you for joining AfriLoom Fabrics. We're glad you're here.
@@ -87,7 +90,7 @@ export function welcomeEmail(firstName: string): string {
       Shop Fabrics
     </a>
   `;
-  return baseLayout(content);
+  return baseLayout(content, unsubscribeUrl);
 }
 
 export interface OrderItem {
@@ -108,15 +111,15 @@ export function orderConfirmationEmail(
 ): string {
   const rows = items.map(i => `
     <tr>
-      <td style="padding:10px 0;border-bottom:1px solid #ede6d8;font-size:14px;color:${BRAND.charcoal};">${i.fabric_name}</td>
-      <td style="padding:10px 0;border-bottom:1px solid #ede6d8;font-size:14px;color:${BRAND.grey};text-align:center;">${i.yards} yds</td>
-      <td style="padding:10px 0;border-bottom:1px solid #ede6d8;font-size:14px;color:${BRAND.charcoal};text-align:right;">GH₵ ${i.subtotal.toFixed(2)}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #ede6d8;font-size:14px;color:${BRAND.charcoal};">${escapeHtml(i.fabric_name)}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #ede6d8;font-size:14px;color:${BRAND.grey};text-align:center;">${escapeHtml(i.yards)} yds</td>
+      <td style="padding:10px 0;border-bottom:1px solid #ede6d8;font-size:14px;color:${BRAND.charcoal};text-align:right;">GH₵ ${escapeHtml(Number(i.subtotal).toFixed(2))}</td>
     </tr>
   `).join('');
 
   const discountRow = discountAmount > 0
-    ? `<tr><td colspan="2" style="padding:8px 0;font-size:13px;color:#2a6a2a;">Discount</td>
-       <td style="padding:8px 0;font-size:13px;color:#2a6a2a;text-align:right;">− GH₵ ${discountAmount.toFixed(2)}</td></tr>`
+     ? `<tr><td colspan="2" style="padding:8px 0;font-size:13px;color:#2a6a2a;">Discount</td>
+       <td style="padding:8px 0;font-size:13px;color:#2a6a2a;text-align:right;">− GH₵ ${escapeHtml(Number(discountAmount).toFixed(2))}</td></tr>`
     : '';
 
   const content = `
@@ -124,12 +127,12 @@ export function orderConfirmationEmail(
       Order Confirmed
     </h1>
     <p style="margin:0 0 24px;font-size:15px;color:#4a4a4a;">
-      Thank you, ${customerName}. Your payment was successful and your order is confirmed.
+      Thank you, ${escapeHtml(customerName)}. Your payment was successful and your order is confirmed.
     </p>
 
     <div style="background:#faf7f3;padding:16px 20px;margin-bottom:24px;">
       <p style="margin:0 0 4px;font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:${BRAND.grey};">Order Reference</p>
-      <p style="margin:0;font-family:Georgia,serif;font-size:22px;font-style:italic;color:${BRAND.primary};">#${orderId}</p>
+      <p style="margin:0;font-family:Georgia,serif;font-size:22px;font-style:italic;color:${BRAND.primary};">#${escapeHtml(orderId)}</p>
     </div>
 
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
@@ -142,13 +145,13 @@ export function orderConfirmationEmail(
       ${discountRow}
       <tr>
         <td colspan="2" style="padding:12px 0 0;font-size:16px;font-weight:600;color:${BRAND.charcoal};">Total Paid</td>
-        <td style="padding:12px 0 0;font-size:16px;font-weight:600;color:${BRAND.charcoal};text-align:right;">GH₵ ${totalAmount.toFixed(2)}</td>
+        <td style="padding:12px 0 0;font-size:16px;font-weight:600;color:${BRAND.charcoal};text-align:right;">GH₵ ${escapeHtml(Number(totalAmount).toFixed(2))}</td>
       </tr>
     </table>
 
     <div style="border-left:3px solid ${BRAND.gold};padding:12px 20px;margin:0 0 28px;background:#faf7f3;">
       <p style="margin:0 0 4px;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:${BRAND.grey};">Delivery to</p>
-      <p style="margin:0;font-size:14px;color:${BRAND.charcoal};">${location}</p>
+      <p style="margin:0;font-size:14px;color:${BRAND.charcoal};">${escapeHtml(location)}</p>
     </div>
 
     <p style="margin:0 0 8px;font-size:14px;color:#4a4a4a;line-height:1.65;">
@@ -158,7 +161,7 @@ export function orderConfirmationEmail(
       Remember: all fabrics are sold unsewn. Take your fabric to your tailor to create something entirely yours.
     </p>
 
-    <a href="${trackingUrl}"
+    <a href="${safeHttpsUrl(trackingUrl)}"
        style="display:inline-block;background:${BRAND.primary};color:#ffffff;text-decoration:none;padding:14px 32px;font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;">
       Track Your Order
     </a>
@@ -172,6 +175,7 @@ export function campaignEmail(
   subscriberName: string,
   unsubscribeUrl: string,
 ): string {
-  const personalised = bodyHtml.replace(/\{\{name\}\}/gi, subscriberName || 'Valued Customer');
+  const safeBody = sanitizeCampaignHtml(bodyHtml);
+  const personalised = safeBody.replace(/\{\{name\}\}/gi, escapeHtml(subscriberName || 'Valued Customer'));
   return baseLayout(personalised, unsubscribeUrl);
 }

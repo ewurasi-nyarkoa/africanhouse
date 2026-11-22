@@ -15,8 +15,14 @@ export class CustomerAuthService {
       this.userSubject.next(data.session?.user ?? null);
     });
 
-    this.supabase.client.auth.onAuthStateChange((_, session) => {
+    this.supabase.client.auth.onAuthStateChange((event, session) => {
       this.userSubject.next(session?.user ?? null);
+      if (event === 'SIGNED_IN' && session?.user) {
+        this.supabase.client.functions.invoke('send-welcome-email')
+          .then(({ error }) => {
+            if (error) console.error('Account welcome email failed:', error.message);
+          }).catch(error => console.error('Account welcome email request failed:', error));
+      }
     });
   }
 
@@ -37,6 +43,7 @@ export class CustomerAuthService {
         id:        data.user.id,
         full_name: fullName,
       });
+
     }
     return null;
   }

@@ -10,7 +10,11 @@
       @if (!submitted) {
         <form class="subscribe__form" (ngSubmit)="onSubmit()">
           <input type="email" [(ngModel)]="email" name="email" placeholder="Your email address" required />
-          <button type="submit" class="btn-primary">Notify Me</button>
+          <label class="subscribe__consent">
+            <input type="checkbox" [(ngModel)]="consent" name="marketingConsent" required />
+            <span>I agree to receive AfriLoom news, new-arrival updates and offers by email. I can unsubscribe at any time.</span>
+          </label>
+          <button type="submit" class="btn-primary" [disabled]="!consent">Notify Me</button>
         </form>
         @if (error) {
           <p class="subscribe__error">{{ error }}</p>

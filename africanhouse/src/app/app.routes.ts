@@ -24,5 +24,9 @@ export const routes: Routes = [
   { path: 'admin/fabrics', loadComponent: () => import('./pages/admin/fabrics/fabrics.component').then(m => m.FabricsComponent), canActivate: [authGuard] },
   { path: 'admin/orders', loadComponent: () => import('./pages/admin/orders/orders.component').then(m => m.OrdersComponent), canActivate: [authGuard] },
   { path: 'admin/promotions', loadComponent: () => import('./pages/admin/promotions/promotions.component').then(m => m.PromotionsComponent), canActivate: [authGuard] },
+  { path: 'admin/email-marketing', loadComponent: () => import('./pages/admin/email-marketing/email-marketing.component').then(m => m.EmailMarketingComponent), canActivate: [authGuard] },
+
+  // Public utility routes
+  { path: 'unsubscribe', loadComponent: () => import('./pages/unsubscribe/unsubscribe.component').then(m => m.UnsubscribeComponent) },
   { path: '**', redirectTo: '' }
 ];

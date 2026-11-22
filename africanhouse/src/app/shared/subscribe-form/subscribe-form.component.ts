@@ -10,9 +10,10 @@ import { SupabaseService } from '../../core/services/supabase.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SubscribeFormComponent {
-  email = '';
+  email     = '';
+  consent   = false;
   submitted = false;
-  error = '';
+  error     = '';
 
   constructor(
     private supabase: SupabaseService,
@@ -20,16 +21,24 @@ export class SubscribeFormComponent {
   ) {}
 
   async onSubmit(): Promise<void> {
-    if (!this.email) return;
-    const { error } = await this.supabase.client
-      .from('subscribers')
-      .insert({ email: this.email });
+    if (!this.email || !this.consent) return;
+
+    const { error } = await this.supabase.client.functions.invoke('subscribe', {
+      body: {
+        email: this.email,
+        consent: this.consent,
+        consentVersion: 'homepage-marketing-v1',
+      },
+    });
+
     if (error) {
       this.error = 'Something went wrong. Please try again.';
     } else {
       this.submitted = true;
-      this.email = '';
     }
+
+    this.email = '';
+    this.consent = false;
     this.cdr.markForCheck();
   }
 }

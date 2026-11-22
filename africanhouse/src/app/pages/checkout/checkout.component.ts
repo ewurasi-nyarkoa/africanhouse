@@ -122,7 +122,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     let paystackReference: string;
     try {
       const result = await this.paymentService.openPaystack(
-        `${phone}@africanhouse.com`,
+        this.customerAuth.currentUser?.email ?? `${phone}@africanhouse.com`,
         this.finalTotal,
         { customer_name: fullName, phone, location },
       );

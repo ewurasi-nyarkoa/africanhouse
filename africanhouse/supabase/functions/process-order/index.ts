@@ -32,9 +32,56 @@ Deno.serve(async (req: Request) => {
       customerId?: string | null;
     } = body;
 
-    if (!paystackReference || !customerName || !customerPhone || !location || !cartItems?.length) {
+    if (!paystackReference || !customerName || !customerPhone || !location) {
       return json({ error: 'Missing required fields' }, 400);
     }
+
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
+      return json({ error: 'Cart must contain at least one valid item' }, 400);
+    }
+
+    const aggregatedCart = new Map<string, number>();
+    for (const [index, item] of cartItems.entries()) {
+      if (!item || typeof item !== 'object') {
+        return json({ error: `Invalid cart item at position ${index + 1}` }, 400);
+      }
+
+      const rawFabricId = (item as any).fabricId;
+      const fabricIdText = typeof rawFabricId === 'number'
+        ? String(rawFabricId)
+        : typeof rawFabricId === 'string'
+          ? rawFabricId.trim()
+          : '';
+
+      if (!/^\d+$/.test(fabricIdText)) {
+        return json({ error: `Invalid fabric ID at cart position ${index + 1}` }, 400);
+      }
+
+      const fabricId = Number(fabricIdText);
+      if (!Number.isSafeInteger(fabricId) || fabricId <= 0) {
+        return json({ error: `Invalid fabric ID at cart position ${index + 1}` }, 400);
+      }
+
+      const yards = (item as any).yards;
+      if (typeof yards !== 'number'
+        || !Number.isFinite(yards)
+        || !Number.isInteger(yards)
+        || yards <= 0
+        || !Number.isSafeInteger(yards)) {
+        return json({ error: `Invalid yard quantity at cart position ${index + 1}` }, 400);
+      }
+
+      const combinedYards = (aggregatedCart.get(String(fabricId)) ?? 0) + yards;
+      if (!Number.isSafeInteger(combinedYards) || combinedYards <= 0) {
+        return json({ error: `Invalid combined yard quantity for fabric ${fabricId}` }, 400);
+      }
+
+      aggregatedCart.set(String(fabricId), combinedYards);
+    }
+
+    const validatedCartItems = Array.from(aggregatedCart.entries())
+      .map(([fabricId, yards]) => ({ fabricId, yards }))
+      .sort((a, b) => Number(a.fabricId) - Number(b.fabricId));
 
     const paystackSecret = Deno.env.get('PAYSTACK_SECRET_KEY');
     const supabaseUrl    = Deno.env.get('SUPABASE_URL')!;
@@ -56,11 +103,19 @@ Deno.serve(async (req: Request) => {
     }
 
     const paidAmountKobo = verifyData.data.amount as number;
+    const paystackEmail = typeof verifyData.data.customer?.email === 'string'
+      ? verifyData.data.customer.email.trim().toLowerCase()
+      : '';
+    const placeholderEmail = `${customerPhone}@africanhouse.com`.toLowerCase();
+    const verifiedCustomerEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(paystackEmail)
+      && paystackEmail !== placeholderEmail
+      ? paystackEmail
+      : null;
 
-    // 2. Fetch current fabric prices and inventory from DB (server-side — client prices are never trusted)
     const db = createClient(supabaseUrl, serviceKey);
 
-    const fabricIds = cartItems.map(i => Number(i.fabricId));
+    // 2. Fetch current fabric prices and inventory from DB (server-side — client prices are never trusted)
+    const fabricIds = validatedCartItems.map(i => Number(i.fabricId));
 
     const { data: fabrics, error: fabricErr } = await db
       .from('fabrics')
@@ -71,18 +126,48 @@ Deno.serve(async (req: Request) => {
       return json({ error: 'Could not load fabric data' }, 500);
     }
 
-    // 3. Validate inventory and compute server-side total
+    // 3. Validate individual and aggregated inventory and compute server-side total
     let serverTotal = 0;
+
     for (const cartItem of cartItems) {
+      const fabricId = String(Number((cartItem as any).fabricId));
+      const yards = (cartItem as any).yards as number;
+      const fabric = fabrics.find((f: { id: number }) => String(f.id) === fabricId) as any;
+      if (!fabric) {
+        return json({ error: `Fabric not found: ${fabricId}` }, 400);
+      }
+
+      const minimumYards = Number(fabric.min_yard);
+      if (!Number.isFinite(minimumYards) || minimumYards <= 0) {
+        return json({ error: `Invalid minimum yard quantity for "${fabric.name}".` }, 409);
+      }
+      if (yards < minimumYards) {
+        return json({ error: `Invalid yard quantity for "${fabric.name}". Minimum is ${minimumYards} yards.` }, 409);
+      }
+      if (yards % minimumYards !== 0) {
+        return json({ error: `Invalid yard quantity for "${fabric.name}".` }, 409);
+      }
+    }
+
+    for (const cartItem of validatedCartItems) {
       const fabric = fabrics.find((f: { id: number }) => String(f.id) === cartItem.fabricId) as any;
       if (!fabric) {
         return json({ error: `Fabric not found: ${cartItem.fabricId}` }, 400);
       }
+
+      const minimumYards = Number(fabric.min_yard);
+      if (!Number.isFinite(minimumYards) || minimumYards <= 0) {
+        return json({ error: `Invalid minimum yard quantity for "${fabric.name}".` }, 409);
+      }
+
       if (!fabric.in_stock || Number(fabric.available_yards) < cartItem.yards) {
         return json({ error: `Insufficient stock for "${fabric.name}". Only ${fabric.available_yards} yards available.` }, 409);
       }
-      if (cartItem.yards % Number(fabric.min_yard) !== 0) {
-        return json({ error: `Invalid yard quantity for "${fabric.name}".` }, 400);
+      if (cartItem.yards < minimumYards) {
+        return json({ error: `Invalid yard quantity for "${fabric.name}". Minimum is ${minimumYards} yards.` }, 409);
+      }
+      if (cartItem.yards % minimumYards !== 0) {
+        return json({ error: `Invalid yard quantity for "${fabric.name}".` }, 409);
       }
       serverTotal += Number(fabric.price_per_yard) * cartItem.yards;
     }
@@ -120,16 +205,57 @@ Deno.serve(async (req: Request) => {
       }, 402);
     }
 
-    // 6. Prevent duplicate paystack_reference
-    const { data: existingOrder } = await db
+    // Bind the server-calculated cart and payment snapshot to this Paystack reference.
+    const cartSnapshotItems = validatedCartItems.map(item => ({
+      fabric_id: Number(item.fabricId),
+      yards: item.yards,
+    }));
+
+    const { data: snapshotResult, error: snapshotError } = await db.rpc('bind_paystack_cart_snapshot', {
+      p_paystack_reference: paystackReference,
+      p_cart_items: cartSnapshotItems,
+      p_server_total: finalTotal,
+      p_discount_amount: discountAmount,
+      p_promotion_id: appliedPromotionId,
+      p_paid_amount_kobo: paidAmountKobo,
+    });
+
+    const snapshotData = Array.isArray(snapshotResult) ? snapshotResult[0] : snapshotResult;
+    if (snapshotError) {
+      console.error('PAYSTACK CART SNAPSHOT FAILED:', snapshotError.message);
+      return json({ error: 'Could not verify this payment reference safely' }, 500);
+    }
+    if (!snapshotData || (snapshotData as any).matched !== true) {
+      return json({
+        error: (snapshotData as any)?.reason ?? 'Paystack reference is associated with a different cart',
+      }, 409);
+    }
+
+    const { data: existingOrder, error: existingOrderError } = await db
       .from('orders')
-      .select('id')
+      .select('id, tracking_token')
       .eq('paystack_reference', paystackReference)
       .maybeSingle();
+    if (existingOrderError) return json({ error: 'Could not verify existing payment order' }, 500);
 
     if (existingOrder) {
-      return json({ error: 'This payment reference has already been used.' }, 409);
+      await sendOrderConfirmation(supabaseUrl, serviceKey, existingOrder.id);
+      return json({ orderId: existingOrder.id, trackingToken: existingOrder.tracking_token });
     }
+
+    const { data: claimRows, error: claimError } = await db.rpc('claim_order_processing', {
+      p_paystack_reference: paystackReference,
+      p_lease_seconds: 600,
+    });
+    if (claimError) {
+      console.error('Payment reference claim failed:', claimError.message);
+      return json({ error: 'Could not claim this payment reference' }, 500);
+    }
+    const orderClaim = Array.isArray(claimRows) ? claimRows[0] : null;
+    if (!orderClaim?.claimed || !orderClaim.claim_token) {
+      return json({ error: 'This payment is already being processed. Please retry shortly.' }, 409);
+    }
+    const claimToken = orderClaim.claim_token as string;
 
     // 7. Fetch fabric costs server-side (service role — never exposed to browser)
     const { data: costsRows } = await db
@@ -142,24 +268,38 @@ Deno.serve(async (req: Request) => {
       costsMap.set(Number(row.fabric_id), Number(row.full_piece_cost ?? 0));
     }
 
-   // 8. Deduct inventory atomically via existing RPC
-    for (const cartItem of cartItems) {
-      const { data: rpcData, error: rpcErr } = await db.rpc('deduct_inventory', {
-        p_fabric_id: Number(cartItem.fabricId),
-        p_yards:     cartItem.yards,
-      });
-      if (rpcErr || (rpcData as any)?.success === false) {
-  console.error('INVENTORY DEDUCTION FAILED:', rpcErr, rpcData);
+    // 8. Deduct the complete cart atomically via existing RPC
+    const batchItems = validatedCartItems.map(item => ({
+      fabric_id: Number(item.fabricId),
+      yards: item.yards,
+    }));
 
-  return json({
-    error: (rpcData as any)?.message ?? 'Inventory error. Please try again.'
-  }, 409);
-}
+    const { data: batchResult, error: batchError } = await db.rpc('deduct_inventory_batch_once', {
+      p_paystack_reference: paystackReference,
+      p_items: batchItems,
+    });
+
+    const batchData = Array.isArray(batchResult) ? batchResult[0] : batchResult;
+    if (batchError || !batchData || (batchData as any).success !== true) {
+      const inventoryError = batchError?.message
+        ?? (batchData as any)?.message
+        ?? 'Inventory deduction failed';
+      console.error('INVENTORY BATCH DEDUCTION FAILED:', inventoryError);
+      await releaseProcessingClaim(
+        db,
+        paystackReference,
+        claimToken,
+        'Inventory deduction failed',
+      );
+
+      return json({
+        error: inventoryError,
+      }, 409);
     }
 
     // 9. Build order items with server-side prices and historical cost snapshot
     const getFabric = (id: string) => fabrics.find((f: { id: number }) => String(f.id) === id)! as any;
-    const orderItems = cartItems.map(item => {
+    const orderItems = validatedCartItems.map(item => {
       const f = getFabric(item.fabricId);
       const fullPieceCost = costsMap.get(Number(item.fabricId)) ?? 0;
       return {
@@ -183,6 +323,7 @@ Deno.serve(async (req: Request) => {
       .insert({
         customer_name:      customerName,
         customer_phone:     customerPhone,
+        customer_email:     verifiedCustomerEmail,
         location,
         delivery_note:      deliveryNote ?? '',
         paystack_reference: paystackReference,
@@ -197,13 +338,28 @@ Deno.serve(async (req: Request) => {
       .select('id, tracking_token')
       .single();
 
-  if (insertErr || !inserted) {
-  console.error('ORDER INSERT FAILED:', insertErr);
+    if (insertErr || !inserted) {
+      console.error('ORDER INSERT FAILED:', insertErr);
+      await releaseProcessingClaim(
+        db,
+        paystackReference,
+        claimToken,
+        'Order insertion failed',
+      );
 
-  return json({
-    error: 'Failed to save order. Please contact support with your payment reference.'
-  }, 500);
-}
+      return json({
+        error: 'Failed to save order. Please contact support with your payment reference.'
+      }, 500);
+    }
+
+    const { error: completeError } = await db.rpc('complete_order_processing', {
+      p_paystack_reference: paystackReference,
+      p_claim_token: claimToken,
+      p_order_id: String((inserted as any).id),
+    });
+    if (completeError) console.error('Order processing completion update failed:', completeError.message);
+
+    if (verifiedCustomerEmail) await sendOrderConfirmation(supabaseUrl, serviceKey, (inserted as any).id);
 
     return json({
       orderId:       (inserted as any).id,
@@ -216,9 +372,48 @@ Deno.serve(async (req: Request) => {
   }
 });
 
+async function sendOrderConfirmation(supabaseUrl: string, serviceKey: string, orderId: number | string): Promise<void> {
+  try {
+    const response = await fetch(`${supabaseUrl}/functions/v1/send-order-confirmation`, {
+      method: 'POST',
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ orderId }),
+    });
+    if (!response.ok) console.error('Order confirmation function returned:', response.status);
+  } catch (error) {
+    console.error('Order confirmation function request failed:', error);
+  }
+}
+
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: { ...CORS, 'Content-Type': 'application/json' },
   });
+}
+
+async function releaseProcessingClaim(
+  db: any,
+  paystackReference: string,
+  claimToken: string,
+  processingError: string,
+): Promise<void> {
+  try {
+    const { data, error } = await db.rpc('release_order_processing', {
+      p_paystack_reference: paystackReference,
+      p_claim_token: claimToken,
+      p_error: processingError,
+    });
+
+    if (error || data !== true) {
+      console.error('PROCESSING CLAIM RELEASE FAILED:', error?.message ?? 'RPC did not confirm release');
+      return;
+    }
+  } catch (error) {
+    console.error('PROCESSING CLAIM RELEASE FAILED:', error instanceof Error ? error.message : 'Unexpected release error');
+  }
 }
